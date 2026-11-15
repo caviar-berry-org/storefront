@@ -2,7 +2,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { firebaseAdminDatabase } from "../firestore";
 
-export const campaign = "first-order-dev-v1";
+export { promotionCampaign as campaign } from "../../../domain/promotion.ts";
 // Issued codes expire after 90 days; books are isolated by APP_ENV.
 export const promotionLifetime: number | null = 90 * 24 * 60 * 60 * 1000;
 export const emailKey = (email: string) =>

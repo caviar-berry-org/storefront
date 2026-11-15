@@ -18,6 +18,7 @@ import {
   type MonoInvoice,
 } from "../../src/domain/payment.ts";
 import {
+  promotionCampaign,
   promotionEligibleSubtotal,
   promotionTotals,
   promotionUsable,
@@ -215,7 +216,7 @@ test("invoice claim prevents parallel duplicates and never recreates an ambiguou
 test("paid webhook consumes stock and coupon once; replays, stale events and wrong amounts cannot corrupt state", async () => {
   const f = fixture();
   f.rows.set("promotionBooks/development/codes/UCB-TEST", {
-    campaign: "first-order-dev-v1",
+    campaign: promotionCampaign,
     percent: 10,
     expiresAt: Date.now() + 86400000,
   });
@@ -272,7 +273,7 @@ test("failed payment releases reservations and coupon; subsequent late payment i
 test("offline acceptance consumes coupon immediately and never invents paid status", async () => {
   const f = fixture();
   f.rows.set("promotionBooks/development/codes/UCB-TEST", {
-    campaign: "first-order-dev-v1",
+    campaign: promotionCampaign,
     percent: 10,
     expiresAt: Date.now() + 86400000,
   });
@@ -403,7 +404,7 @@ test("past batch dates do not interrupt verified payment or stock consumption", 
 test("offline cancellation restores the exact stock batches and keeps its consumed coupon", async () => {
   const f = fixture();
   f.rows.set("promotionBooks/development/codes/UCB-TEST", {
-    campaign: "first-order-dev-v1",
+    campaign: promotionCampaign,
     percent: 10,
     expiresAt: Date.now() + 86400000,
   });

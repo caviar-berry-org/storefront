@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { promotionCampaign } from "../../src/domain/promotion.ts";
 import test from "node:test";
 import { resolve } from "node:path";
 import { createHash } from "node:crypto";
@@ -295,7 +296,7 @@ test("issued codes preserve their percent, are transferable and reject missing e
     else process.env.APP_ENV = previous;
   });
   const code = {
-    campaign: "first-order-dev-v1",
+    campaign: promotionCampaign,
     percent: 15,
     expiresAt: (Date.now() + 86400000) as number | null | undefined,
     emailKey: createHash("sha256").update("test@example.com").digest("hex"),
