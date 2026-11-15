@@ -1,8 +1,11 @@
 name: Storefront checks
 on:
+  # `main` is the development branch and deploys to the Vercel preview URL;
+  # `prod` is the production branch behind the domain. Both run the checks on a
+  # direct push, and every pull request runs them regardless of target.
   pull_request:
   push:
-    branches: [main, dev]
+    branches: [main, prod]
   workflow_dispatch:
 permissions:
   contents: read
