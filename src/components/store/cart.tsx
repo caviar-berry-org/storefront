@@ -74,7 +74,17 @@ async function fetchPromotion(
         promotion: {
           code,
           percent: data.percent,
-          excludedProductIds: ["trout"],
+          // Scope comes from the issued code, never restated here. The staff
+          // choose it in the admin; a literal in this file silently disagreed
+          // with the server, which reads the stored list. The cart then showed
+          // no discount on an excluded product while the server applied one,
+          // the totals failed to match and checkout refused with "price or
+          // stock changed" — a message that described neither cause.
+          ...(Array.isArray(data.excludedProductIds) && {
+            excludedProductIds: data.excludedProductIds.filter(
+              (id: unknown) => typeof id === "string",
+            ),
+          }),
           ...(Array.isArray(data.productIds) && {
             productIds: data.productIds.filter(
               (id: unknown) => typeof id === "string",
