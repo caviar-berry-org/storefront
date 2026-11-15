@@ -9,7 +9,12 @@ import {
   assertMailRecipient,
   smtpTransport,
 } from "../../src/lib/server/mail/smtp.ts";
-import { promotionMessage } from "../../src/lib/server/mail/templates.ts";
+import {
+  orderMessage,
+  promotionMessage,
+  restockMessage,
+  testMessage,
+} from "../../src/lib/server/mail/templates.ts";
 
 function fixture(t: { after: (fn: () => void) => void }) {
   const previous = process.env.PROMOTION_EMAIL_ENABLED;
@@ -475,6 +480,71 @@ test("DEV promotion mail uses a single subject marker and production body with a
       assert.match(mail.html, /href="mailto:sale@caviar.net.ua"/);
       assert.match(mail.html, /href="tel:\+380981944248"/);
       assert.match(mail.html, /role="presentation"/);
+    }
+  } finally {
+    process.env.APP_ENV = previous;
+  }
+});
+
+test("production mail carries no [TEST] marker in any letter or locale", () => {
+  // The marker is what tells staff a letter came from DEV. A production letter
+  // wearing it reaches customers and reads as a mistake; only the DEV case was
+  // covered, so nothing guarded the half that customers actually see.
+  const previous = process.env.APP_ENV;
+  process.env.APP_ENV = "production";
+  const order = (locale: "ua" | "en", kind: "created" | "paid" | "shipment") =>
+    orderMessage(
+      {
+        id: "x",
+        number: "CB-1",
+        createdAt: Date.UTC(2026, 10, 15),
+        customer: {
+          name: "N",
+          email: "a@b.c",
+          phone: "+380671234567",
+          type: "person",
+        },
+        type: "iban",
+        status: "new",
+        revision: 1,
+        locale,
+        lines: [
+          {
+            id: "l1",
+            variantId: "v",
+            name: "Ікра",
+            weightGrams: 100,
+            quantity: 1,
+            unitPriceMinor: 70000,
+          },
+        ],
+        subtotalMinor: 70000,
+        discountMinor: 0,
+        totalMinor: 70000,
+        promotion: null,
+        delivery: { method: "branch", city: "Київ", destination: "В12" },
+        payment: { method: "iban", status: "pending" },
+      } as never,
+      kind,
+    );
+  try {
+    for (const locale of ["ua", "en"] as const) {
+      const letters = [
+        promotionMessage(locale, "UCB-CODE", 12, Date.now() + 86400000),
+        restockMessage(locale, "Ім'я", "https://caviar.net.ua/ua#ikra"),
+        testMessage(locale),
+        order(locale, "created"),
+        order(locale, "paid"),
+        order(locale, "shipment"),
+      ];
+      for (const mail of letters) {
+        assert.ok(
+          !mail.subject.includes("[TEST]"),
+          `production subject carries the DEV marker: ${mail.subject}`,
+        );
+        assert.ok(!mail.text.includes("[TEST]"));
+        assert.ok(!mail.html.includes("[TEST]"));
+      }
     }
   } finally {
     process.env.APP_ENV = previous;
