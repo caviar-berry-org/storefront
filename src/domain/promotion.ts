@@ -1,5 +1,19 @@
 import type { CartLine } from "./cart.ts";
 import { findVariant, type Product } from "./catalog.ts";
+/**
+ * Stamped on every issued code and checked when one is redeemed, so codes from
+ * one campaign can never be spent against another.
+ *
+ * Renaming it invalidates every code already issued under the old name —
+ * `validatePromotion` compares this value — so it can only change before real
+ * customers hold codes. It also feeds the mail deduplication key.
+ *
+ * Lives here rather than beside the Firestore helpers because tests need it and
+ * must not restate it: the previous value said "dev" and travelled into
+ * production documents unnoticed, duplicated as a literal in three test files.
+ */
+export const promotionCampaign = "first-order-v1";
+
 export interface Promotion {
   code: string;
   percent: number;

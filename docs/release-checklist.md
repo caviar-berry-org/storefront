@@ -18,10 +18,38 @@
 ## B. Дані клієнта (Firebase + Cloudinary зараз порожні)
 
 7. Наповнити prod-Firestore: товари, фасування, залишки, подарункові набори, SEO-поля.
-8. Задеплоїти індекси Firestore: `npx firebase deploy --only firestore:indexes --project caviar-berry-prod`. Перевірено 14.11.2026: база `(default)` у prod існує, але індексів у ній **0**, тож деплой лише додає й нічого не видаляє. Без них впадуть списки замовлень/заявок/клієнтів, звіт за каналами і — найтихіше — `collectionGroup("notifications")` у `/api/internal/reconcile`, тобто пересилання застряглих листів. Звірити після деплою: `npx firebase firestore:indexes --project caviar-berry-prod` має дати ті самі 25 індексів і 1 `fieldOverrides`, що в `firestore.indexes.json`.
+8. Задеплоїти індекси Firestore: `npx firebase deploy --only firestore:indexes --project caviar-berry-prod`. Перевірено 14.11.2026: база `(default)` у prod існує, але індексів у ній **0**, тож деплой лише додає й нічого не видаляє. Без них впадуть списки замовлень/заявок/клієнтів, звіт за каналами і — найтихіше — `collectionGroup("notifications")` у `/api/internal/reconcile`, тобто пересилання застряглих листів. Звірити після деплою: `firebase firestore:indexes --project caviar-berry-prod` має дати ті самі 25 індексів і 1 `fieldOverrides`, що в `firestore.indexes.json`. **Виконано й звірено 15.11.2026:** 25/25 збігаються поелементно, зайвого немає, `fieldOverrides` на `notifications.state` має обидва scope — `COLLECTION` і `COLLECTION_GROUP`. Блокер закрито. (Зверніть увагу: `npx firebase-tools` не ставиться на Node 26 — користуйтесь встановленим `firebase`.)
 9. Залити медіа в prod-Cloudinary, звірити `src/content/bundled-catalog-media.json`.
-10. Задеплоїти правила доступу Firestore: `npx firebase deploy --only firestore:rules --project caviar-berry-prod`. Правила лежать у `firestore.rules` і забороняють **усе** — жоден клієнт не читає Firestore напряму, а веб-ключ і project id присутні в браузері для Google-входу. У консолі переконатися, що активна версія правил саме ця (не «test mode»).
-11. Увімкнути TTL у Firestore prod-проєкту на полі `expiresAt` для колекцій `checkoutLimits` і колекції лімітів заявок. Без цього документи лімітів накопичуються без обмежень — у коді це зробити неможливо, лише в консолі або через `gcloud firestore fields ttls update`.
+10. Задеплоїти правила доступу Firestore: `npx firebase deploy --only firestore:rules --project caviar-berry-prod`. Правила лежать у `firestore.rules` і забороняють **усе** — жоден клієнт не читає Firestore напряму, а веб-ключ і project id присутні в браузері для Google-входу. У консолі переконатися, що активна версія правил саме ця (не «test mode»). **Перевірено 15.11.2026:** активний ruleset від 07.11 — тобто створений самим Firebase при заведенні бази, а не наш файл. Зміст **ефективно той самий** (`allow read, write: if false` на `/{document=**}`), тож дірки немає й база в locked-режимі. Деплой із репо все одно потрібен, щоб активна версія була доказово нашою й не розійшлась далі.
+11. Увімкнути TTL у Firestore prod-проєкту на полі `expiresAt` для колекцій `checkoutLimits` і колекції лімітів заявок. Без цього документи лімітів накопичуються без обмежень — у коді це зробити неможливо, лише в консолі або через `gcloud`. **Станом на 15.11.2026 крок невиконуваний:** `gcloud` відмовляє з
+    `PERMISSION_DENIED: Project caviar-berry-prod has billing disabled`. TTL у Firestore —
+    функція платного Blaze, тобто цей крок вимагає ввімкнути білінг, чого проєкт свідомо
+    уникає.
+
+**Рекомендована заміна замість Blaze:** прибирати прострочені документи лімітів у
+добовому кроні `/api/internal/reconcile`, який і так виконується. Обидві колекції —
+це лічильники «IP за годину» (`digest(address:hour)`), документи дрібні, тож вибірка за
+`expiresAt < now` з обмеженою пачкою видалень коштує копійки й знімає залежність від
+Blaze. Доки цього немає, ризик низький: 1 ГіБ безкоштовного сховища вміщає дуже багато
+таких записів, і на реліз це не впливає. Точні колекції — `checkoutLimits` (`create-order.ts:100`) і `inquiryLimits` (`inquiry-submission.ts:41`). Команди:
+
+```sh
+gcloud firestore fields ttls update expiresAt --collection-group=checkoutLimits --project=caviar-berry-prod --enable-ttl
+gcloud firestore fields ttls update expiresAt --collection-group=inquiryLimits  --project=caviar-berry-prod --enable-ttl
+```
+
+11-б. **Тимчасово спрямувати `SITE_URL` у Production на силку Vercel, інакше в прод-адмінку не зайти.**
+`/api/auth/session` вимагає `Origin === new URL(SITE_URL).origin` (`route.ts:33`), а
+`staffSettings()` бере origin саме з `SITE_URL`. Поки там `https://caviar.net.ua`, вхід із
+`*.vercel.app` повертає `403 origin-mismatch` — незалежно від того, що адреса є в
+`ADMIN_ALLOWED_EMAILS` і домен доданий у Firebase Auth. Перевірено 15.11.2026.
+
+А зайти в прод-адмінку треба **до** катування: саме через неї заливається каталог.
+Тому на час налаштування ставимо `SITE_URL=https://storefront-three-navy.vercel.app`
+(продакшен-аліас) і редеплоїмо. Прод закритий захистом, тож canonical і sitemap на цю
+силку нікому не шкодять. **Повернути на `https://caviar.net.ua` — крок 26-б, не забути.**
+
+11-а. **Додати домени Vercel у Firebase Auth → Authorized domains.** Перевірено 15.11.2026: у списку є `localhost`, `caviar-berry-prod.firebaseapp.com`, `caviar-berry-prod.web.app` і `caviar.net.ua`, але **немає домену Vercel**. Google-провайдер увімкнено. Поки домен Vercel не доданий, вхід у прод-адмінку на `*.vercel.app` не спрацює — а це єдиний спосіб перевірити адмінку до катування.
 
 ## B2. Гілки, репозиторій і тариф Vercel
 
@@ -88,6 +116,21 @@ Password Protection для прев'ю, яке зараз відкрите вс�
 26. Переконатися, що теми листів **без** `[TEST]` (префікс зникає при `APP_ENV=production`).
 
 ## E. Перемикання домену
+
+**26-б. Повернути `SITE_URL` у Production на `https://caviar.net.ua`** і редеплоїти — скасувати тимчасову підміну з кроку 11-б. Якщо цього не зробити, прод піде в індекс із canonical, hreflang і sitemap, що вказують на `*.vercel.app`. Перевірити після редеплою: `curl -s https://caviar.net.ua/ua | grep canonical` і `curl -s https://caviar.net.ua/robots.txt` мають називати домен, а не Vercel.
+
+**26-а. Перемкнути Deployment Protection зі «All Deployments» на «Standard Protection»** — і лише на цьому кроці. До катування тримати «All Deployments».
+
+Причина, перевірена відповіддю сервера 15.11.2026: попри опис «protect all except
+production **Custom** Domains», Standard лишає відкритим і продакшен-аліас
+`*.vercel.app`. А на ньому вже стоїть `APP_ENV=production`, тож `robots.ts` віддає
+`Allow: /`, публікує sitemap і не додає `X-Robots-Tag`. Тобто під Standard прод
+сканується ще до того, як з'явився домен, із canonical на `caviar.net.ua`, де поки
+що старий сайт.
+
+Під «All Deployments» закрито все, зокрема аліас. Перемикати на Standard — коли
+каталог, `CHECKOUT_ENABLED` і пошта вже в бойовому стані, бо в ту саму мить сайт
+стає видимим для пошуковиків.
 
 27. Перемкнути кореневий `A` на Vercel — **тільки після** виконаних кроків 3–6.
 28. Повторити зовнішні тести пошти й вебмейлу.
