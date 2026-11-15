@@ -1,0 +1,232 @@
+[
+  {
+    "id": "sterlet",
+    "slug": "sterlet",
+    "name": "Ікра стерляді",
+    "englishName": "Sterlet Caviar",
+    "latin": "A.RUTHENUS",
+    "description": "Делікатна ікра з ніжною текстурою. Розмір зерна — 1,5–2 мм, колір — від темно-сірого до насичено-чорного.",
+    "intro": null,
+    "taste": "м’який і делікатний, з легкою солоністю. Дрібні ікринки ніжно лопаються й тануть у роті. Вдалий вибір для першого знайомства з чорною ікрою.",
+    "fish": "стерлядь — Acipenser ruthenus.",
+    "grain": "1,5–2 мм; від сірого до насичено-чорного.",
+    "ingredients": "ікра осетрових риб зерниста, харчова сіль, консервант E200.",
+    "storage": "за температури −4…−2 °C — 12 місяців. Після відкриття: 0…+6 °C, не більше 48 годин.",
+    "nutrition": "240 ккал; білки — 21,2 г; жири — 18 г (НЖК — 3 г); вуглеводи — 0 г.",
+    "allergen": "риба та продукти її переробки.",
+    "pairing": "з млинцями або тостами з вершковим маслом. Із напоїв — шампанське брют, сухе біле вино або охолоджена горілка без добавок.",
+    "plate": "var(--p-sterlet)",
+    "lidImage": "/assets/img/catalog/sterlet-lid.webp",
+    "roeImage": "/assets/img/prod/prem-berry-lid.jpg",
+    "roeTile": 75,
+    "servingImage": "/assets/img/catalog/sterlet-card.webp",
+    "gallery": [],
+    "season": null,
+    "variants": [
+      {
+        "id": "sterlet-50",
+        "weightGrams": 50,
+        "priceMinor": 160000,
+        "available": true,
+        "image": "/assets/img/prod/sterlet/detail-50g.webp",
+        "imageIsRepresentative": false,
+        "stockQuantity": 0
+      },
+      {
+        "id": "sterlet-100",
+        "weightGrams": 100,
+        "priceMinor": 310000,
+        "available": true,
+        "image": "/assets/img/prod/sterlet/detail-100g.webp",
+        "imageIsRepresentative": false,
+        "stockQuantity": 20
+      }
+    ],
+    "tasteAccent": "м’який і делікатний",
+    "servingAlt": "Ікра стерляді на чотирьох перламутрових ложках",
+    "detailServingImage": "/assets/img/prod/sterlet/detail-extra-1.webp",
+    "detailServingAlt": "Ікра стерляді на перламутрових ложках серед білих каменів",
+    "jarBodyImage": "/assets/img/catalog/sterlet-body.webp"
+  },
+  {
+    "id": "hybrid",
+    "slug": "hybrid",
+    "name": "Ікра гібрида білуги",
+    "englishName": "Beluga Hybrid Caviar",
+    "latin": "HUSO HUSOxA.RUTHENUS",
+    "description": "Виразний смак із горіховим післясмаком. Розмір зерна — 2–2,5 мм, колір — від світло-сірого до коричневого.",
+    "intro": null,
+    "taste": "виразний, із чистим горіховим післясмаком. Ніжне зерно з м’якою оболонкою делікатно лопається в роті.",
+    "fish": "бестер — гібрид білуги, Huso huso × Acipenser ruthenus.",
+    "grain": "2–2,5 мм; від світло-сірого до коричневого.",
+    "ingredients": "ікра осетрових риб зерниста, харчова сіль, консервант E200.",
+    "storage": "за температури −4…−2 °C — 12 місяців. Після відкриття: 0…+6 °C, не більше 48 годин.",
+    "nutrition": "210 ккал; білки — 22,2 г; жири — 14,2 г (НЖК — 2,5 г); вуглеводи — 0 г.",
+    "allergen": "риба та продукти її переробки.",
+    "pairing": "з авокадо, перепелиним яйцем або панкейками з крем-сиром. Із напоїв — шампанське брют або охолоджена горілка.",
+    "plate": "var(--p-hybrid)",
+    "lidImage": "/assets/img/catalog/hybrid-lid.webp",
+    "roeImage": "/assets/img/prod/prem-berry-lid.jpg",
+    "roeTile": 94,
+    "servingImage": "/assets/img/catalog/hybrid-card.webp",
+    "detailServingImage": "/assets/img/prod/hybrid/detail-extra-1.webp",
+    "detailServingAlt": "Ікра гібрида білуги з лососем та авокадо",
+    "gallery": [],
+    "season": null,
+    "variants": [
+      {
+        "id": "hybrid-50",
+        "weightGrams": 50,
+        "priceMinor": 220000,
+        "available": true,
+        "image": "/assets/img/prod/hybrid/detail-50g.webp",
+        "imageIsRepresentative": false,
+        "stockQuantity": 20
+      },
+      {
+        "id": "hybrid-100",
+        "weightGrams": 100,
+        "priceMinor": 410000,
+        "available": true,
+        "image": "/assets/img/prod/hybrid/detail-100g.webp",
+        "imageIsRepresentative": false,
+        "stockQuantity": 20
+      },
+      {
+        "id": "hybrid-400",
+        "weightGrams": 400,
+        "priceMinor": 1555000,
+        "available": true,
+        "image": "/assets/img/prod/hybrid/detail-400g.webp",
+        "imageIsRepresentative": false,
+        "stockQuantity": 20
+      }
+    ],
+    "tasteAccent": "виразний",
+    "servingAlt": "Ікра гібрида білуги у скляній ікорниці на льоду",
+    "jarBodyImage": "/assets/img/catalog/hybrid-body.webp"
+  },
+  {
+    "id": "premium",
+    "slug": "premium",
+    "name": "Осетрова ікра Premium",
+    "englishName": "Premium Sturgeon Caviar",
+    "latin": "A.BAERII/A.GUELDENSTAEDTII/HUSO HUSOxA.RUTHENUS",
+    "description": "Добірна ікра для особливих моментів, від осетрових віком від 10 років. Розмір зерна — 3–3,5 мм.",
+    "intro": "Premium — добірна ікра для особливих моментів, отримана від осетрових віком від 10 років. Це категорія відбору за великим зерном 3–3,5 мм, а смакові відтінки залежать від виду риби.",
+    "taste": "насичений, із маслянистою текстурою, горіховими та вершковими нотами й тривалим післясмаком. Великі ікринки м’яко лопаються, залишаючи приємну солоність.",
+    "fish": "сибірський осетер — Acipenser baerii; руський осетер — Acipenser gueldenstaedtii; гібрид білуги — Huso huso × Acipenser ruthenus.",
+    "grain": "3–3,5 мм; від риб віком від 10 років.",
+    "ingredients": "ікра осетрових риб зерниста, харчова сіль, консервант E200.",
+    "storage": "за температури −4…−2 °C — 12 місяців. Після відкриття: 0…+6 °C, не більше 48 годин.",
+    "nutrition": "210 ккал; білки — 22,2 г; жири — 14,2 г (НЖК — 2,5 г); вуглеводи — 0 г.",
+    "allergen": "риба та продукти її переробки.",
+    "pairing": "окремо, з перламутрової ложки, або зі свіжою устрицею чи теплою печеною картоплею. Із напоїв — шампанське брют, безалкогольне ігристе або охолоджена горілка.",
+    "plate": "var(--p-premium)",
+    "lidImage": "/assets/img/catalog/premium-lid.webp",
+    "roeImage": "/assets/img/prod/prem-berry-lid.jpg",
+    "roeTile": 115,
+    "servingImage": "/assets/img/catalog/premium-card.webp",
+    "gallery": [],
+    "season": null,
+    "variants": [
+      {
+        "id": "premium-50",
+        "weightGrams": 50,
+        "priceMinor": 245000,
+        "available": true,
+        "image": "/assets/img/prod/premium/detail-50g.webp",
+        "imageIsRepresentative": false,
+        "stockQuantity": 20
+      },
+      {
+        "id": "premium-100",
+        "weightGrams": 100,
+        "priceMinor": 465000,
+        "available": true,
+        "image": "/assets/img/prod/premium/detail-100g.webp",
+        "imageIsRepresentative": false,
+        "stockQuantity": 20
+      },
+      {
+        "id": "premium-400",
+        "weightGrams": 400,
+        "priceMinor": 1766000,
+        "available": true,
+        "image": "/assets/img/prod/premium/detail-400g.webp",
+        "imageIsRepresentative": false,
+        "stockQuantity": 20
+      }
+    ],
+    "tasteAccent": "насичений",
+    "latinNote": "До категорії Premium може належати ікра сибірського осетра, руського осетра або гібрида білуги. Смакові відтінки залежать від виду риби.",
+    "servingAlt": "Ікра Premium у скляних ікорницях на льоду",
+    "fishLabel": "Види риб у категорії",
+    "detailServingImage": "/assets/img/prod/premium/detail-extra-1.webp",
+    "detailServingAlt": "Закуски з лососем та ікрою Premium",
+    "jarBodyImage": "/assets/img/catalog/premium-body.webp"
+  },
+  {
+    "id": "trout",
+    "slug": "trout",
+    "name": "Ікра форелі",
+    "englishName": "Trout Roe",
+    "latin": "Salmo trutta",
+    "description": "Червона ікра з ніжним слабосолоним смаком від форелі, вирощеної в джерельній воді. Розмір зерна — 3–4 мм.",
+    "intro": null,
+    "taste": "яскравий, свіжий і слабосолоний, з легкою солодкуватістю. Пружні ікринки лопаються в роті, розкриваючи смак.",
+    "fish": null,
+    "grain": "3–4 мм; яскраво-оранжевий.",
+    "ingredients": "ікра форелі, харчова сіль, консерванти E211 та E200.",
+    "storage": "за температури −2…+2 °C — 45 діб. Після відкриття: 0…+4 °C, не більше 48 годин.",
+    "nutrition": "233,7 ккал; білки — 28,6 г; жири — 3,4 г (НЖК — 2,18 г); вуглеводи — 0 г.",
+    "allergen": "риба та продукти її переробки.",
+    "pairing": "з тостами з вершковим маслом, млинцями або вареним яйцем. Із напоїв — сухе біле вино або ігристе брют.",
+    "plate": "var(--p-trout)",
+    "lidImage": "/assets/img/catalog/trout-lid.webp",
+    "roeImage": "/assets/img/prod/red-berry.jpg",
+    "roeTile": 88,
+    "servingImage": "/assets/img/catalog/trout-card.webp",
+    "detailServingImage": "/assets/img/prod/trout/detail-extra-1.webp",
+    "detailServingAlt": "Банки ікри форелі різних фасувань",
+    "gallery": [
+      {
+        "src": "/assets/img/prod/trout/detail-extra-2-full.webp",
+        "alt": "Відкрита ікра форелі з перламутровою ложкою"
+      }
+    ],
+    "season": "жовтень – березень",
+    "variants": [
+      {
+        "id": "trout-100",
+        "weightGrams": 100,
+        "priceMinor": 70000,
+        "available": true,
+        "image": "/assets/img/prod/trout/detail-100g.webp",
+        "imageIsRepresentative": false,
+        "stockQuantity": 20
+      },
+      {
+        "id": "trout-200",
+        "weightGrams": 200,
+        "priceMinor": 125000,
+        "available": true,
+        "image": "/assets/img/prod/trout/detail-200g.webp",
+        "imageIsRepresentative": false,
+        "stockQuantity": 0
+      },
+      {
+        "id": "trout-500",
+        "weightGrams": 500,
+        "priceMinor": 299000,
+        "available": true,
+        "image": "/assets/img/prod/trout/detail-500g.webp",
+        "imageIsRepresentative": false,
+        "stockQuantity": 20
+      }
+    ],
+    "tasteAccent": "яскравий",
+    "servingAlt": "Ікра форелі на двох перламутрових ложках",
+    "jarBodyImage": "/assets/img/catalog/trout-body.webp"
+  }
+]

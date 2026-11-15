@@ -1,0 +1,21 @@
+rules_version = '2';
+
+// Every read and write to this database goes through our own server routes on the
+// Firebase Admin SDK, which bypasses these rules. No browser code ever opens a
+// Firestore connection — the client SDK is loaded only for Google sign-in
+// (src/components/staff/google-sign-in.tsx), and that touches Auth, not Firestore.
+//
+// That matters because the web API key and the project id are both present in the
+// browser for sign-in. These rules are therefore the only thing standing between a
+// public key and the orders, customers and inquiries collections, so they deny
+// everything. A new collection is covered by this the moment it is created.
+//
+// If a feature ever genuinely needs direct client access, add a narrow rule for that
+// one path with its own test — never widen this default.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

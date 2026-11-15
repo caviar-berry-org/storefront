@@ -1,0 +1,111 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.metric {
+  display: grid;
+  align-content: space-between;
+  min-inline-size: 0;
+  min-block-size: 112px;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  container-type: inline-size;
+}
+
+.metric header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.metric h2 {
+  margin: 0;
+  padding-block-start: 3px;
+  font-size: 0.76rem;
+  font-weight: 650;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.value {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1rem, 18cqi, 2.15rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.timestamp {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+@media (max-width: 1240px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.metric:has([role="tooltip"]) {
+  z-index: 1;
+}
+
+.metric header {
+  position: relative;
+}
+
+.metric header [data-compact] {
+  position: static;
+}
+
+.metric:first-child [role="tooltip"] {
+  inset-inline-start: 0;
+  inset-inline-end: auto;
+}
+
+@media (max-width: 550px) {
+  .metric:nth-child(odd) [role="tooltip"] {
+    inset-inline-start: 0;
+    inset-inline-end: auto;
+  }
+}
+
+.metric {
+  position: relative;
+}
+.metric h2 a {
+  color: inherit;
+  text-decoration: none;
+}
+.metric h2 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+}
+.metric:has(a:focus-visible) {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.metric header {
+  position: static;
+}
+.metric header [data-compact] {
+  position: relative;
+  z-index: 2;
+}

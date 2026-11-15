@@ -1,0 +1,74 @@
+{
+  "/assets/img/catalog/hybrid-body.webp": {
+    "width": 1000,
+    "height": 1000,
+    "srcSet": "/assets/img/catalog-set/hybrid-body-384.4664cee8.webp 384w, /assets/img/catalog-set/hybrid-body-640.19a48738.webp 640w, /assets/img/catalog-set/hybrid-body-960.bef07d0b.webp 960w",
+    "fallback": "/assets/img/catalog-set/hybrid-body-384.4664cee8.webp"
+  },
+  "/assets/img/catalog/hybrid-card.webp": {
+    "width": 1041,
+    "height": 1300,
+    "srcSet": "/assets/img/catalog-set/hybrid-card-384.4b045ffe.webp 384w, /assets/img/catalog-set/hybrid-card-640.6867b4ed.webp 640w, /assets/img/catalog-set/hybrid-card-960.d3ba60b7.webp 960w",
+    "fallback": "/assets/img/catalog-set/hybrid-card-384.4b045ffe.webp"
+  },
+  "/assets/img/catalog/hybrid-lid.webp": {
+    "width": 562,
+    "height": 558,
+    "srcSet": "/assets/img/catalog-set/hybrid-lid-384.cd4e60de.webp 384w",
+    "fallback": "/assets/img/catalog-set/hybrid-lid-384.cd4e60de.webp"
+  },
+  "/assets/img/catalog/premium-body.webp": {
+    "width": 1000,
+    "height": 1000,
+    "srcSet": "/assets/img/catalog-set/premium-body-384.82307cb6.webp 384w, /assets/img/catalog-set/premium-body-640.296f9e8d.webp 640w, /assets/img/catalog-set/premium-body-960.c12a6884.webp 960w",
+    "fallback": "/assets/img/catalog-set/premium-body-384.82307cb6.webp"
+  },
+  "/assets/img/catalog/premium-card.webp": {
+    "width": 1042,
+    "height": 1300,
+    "srcSet": "/assets/img/catalog-set/premium-card-384.e725c93b.webp 384w, /assets/img/catalog-set/premium-card-640.a6bfdf3f.webp 640w, /assets/img/catalog-set/premium-card-960.b98273b5.webp 960w",
+    "fallback": "/assets/img/catalog-set/premium-card-384.e725c93b.webp"
+  },
+  "/assets/img/catalog/premium-lid.webp": {
+    "width": 425,
+    "height": 425,
+    "srcSet": "/assets/img/catalog-set/premium-lid-384.0a113fd6.webp 384w",
+    "fallback": "/assets/img/catalog-set/premium-lid-384.0a113fd6.webp"
+  },
+  "/assets/img/catalog/sterlet-body.webp": {
+    "width": 1000,
+    "height": 1000,
+    "srcSet": "/assets/img/catalog-set/sterlet-body-384.06ae7205.webp 384w, /assets/img/catalog-set/sterlet-body-640.b3164dac.webp 640w, /assets/img/catalog-set/sterlet-body-960.60435fd2.webp 960w",
+    "fallback": "/assets/img/catalog-set/sterlet-body-384.06ae7205.webp"
+  },
+  "/assets/img/catalog/sterlet-card.webp": {
+    "width": 1042,
+    "height": 1300,
+    "srcSet": "/assets/img/catalog-set/sterlet-card-384.1fd38361.webp 384w, /assets/img/catalog-set/sterlet-card-640.84211e5e.webp 640w, /assets/img/catalog-set/sterlet-card-960.c1a66c89.webp 960w",
+    "fallback": "/assets/img/catalog-set/sterlet-card-384.1fd38361.webp"
+  },
+  "/assets/img/catalog/sterlet-lid.webp": {
+    "width": 505,
+    "height": 505,
+    "srcSet": "/assets/img/catalog-set/sterlet-lid-384.bc7b2a04.webp 384w",
+    "fallback": "/assets/img/catalog-set/sterlet-lid-384.bc7b2a04.webp"
+  },
+  "/assets/img/catalog/trout-body.webp": {
+    "width": 1000,
+    "height": 1000,
+    "srcSet": "/assets/img/catalog-set/trout-body-384.f7021ca2.webp 384w, /assets/img/catalog-set/trout-body-640.9c702e20.webp 640w, /assets/img/catalog-set/trout-body-960.d0119589.webp 960w",
+    "fallback": "/assets/img/catalog-set/trout-body-384.f7021ca2.webp"
+  },
+  "/assets/img/catalog/trout-card.webp": {
+    "width": 1106,
+    "height": 1300,
+    "srcSet": "/assets/img/catalog-set/trout-card-384.05bcca96.webp 384w, /assets/img/catalog-set/trout-card-640.d091c012.webp 640w, /assets/img/catalog-set/trout-card-960.73ac7556.webp 960w",
+    "fallback": "/assets/img/catalog-set/trout-card-384.05bcca96.webp"
+  },
+  "/assets/img/catalog/trout-lid.webp": {
+    "width": 844,
+    "height": 844,
+    "srcSet": "/assets/img/catalog-set/trout-lid-384.24350931.webp 384w, /assets/img/catalog-set/trout-lid-640.6b35951d.webp 640w",
+    "fallback": "/assets/img/catalog-set/trout-lid-384.24350931.webp"
+  }
+}

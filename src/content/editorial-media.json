@@ -1,0 +1,70 @@
+{
+  "about-taste": {
+    "variants": [
+      {
+        "media": "(min-width: 561px) and (max-width: 640px)",
+        "sizes": "calc(100vw - 32px)",
+        "width": 1280,
+        "height": 960,
+        "sources": {
+          "image/avif": "/assets/img/editorial-set/about-taste-wide-640.6a6b32c1.avif 640w, /assets/img/editorial-set/about-taste-wide-1280.c927df4e.avif 1280w",
+          "image/webp": "/assets/img/editorial-set/about-taste-wide-640.a3c74f20.webp 640w, /assets/img/editorial-set/about-taste-wide-1280.946d18e5.webp 1280w"
+        }
+      },
+      {
+        "sizes": "(min-width: 1920px) 936px, (min-width: 641px) 48vw, calc(100vw - 32px)",
+        "width": 1920,
+        "height": 2560,
+        "sources": {
+          "image/avif": "/assets/img/editorial-set/about-taste-base-480.d8a62b35.avif 480w, /assets/img/editorial-set/about-taste-base-720.3146e910.avif 720w, /assets/img/editorial-set/about-taste-base-960.b14c01ae.avif 960w, /assets/img/editorial-set/about-taste-base-1200.e3de8611.avif 1200w, /assets/img/editorial-set/about-taste-base-1600.fd5c3fbd.avif 1600w, /assets/img/editorial-set/about-taste-base-1920.eac583d6.avif 1920w",
+          "image/webp": "/assets/img/editorial-set/about-taste-base-480.999ff1cb.webp 480w, /assets/img/editorial-set/about-taste-base-720.5f783734.webp 720w, /assets/img/editorial-set/about-taste-base-960.e2431647.webp 960w, /assets/img/editorial-set/about-taste-base-1200.4e91e6b7.webp 1200w, /assets/img/editorial-set/about-taste-base-1600.cb68c0a1.webp 1600w, /assets/img/editorial-set/about-taste-base-1920.263cb6cc.webp 1920w"
+        }
+      }
+    ],
+    "width": 1920,
+    "height": 2560,
+    "fallback": "/assets/img/editorial-set/about-taste-base-480.999ff1cb.webp"
+  },
+  "corp-gift": {
+    "variants": [
+      {
+        "media": "(min-width: 561px) and (max-width: 640px)",
+        "sizes": "calc(100vw - 32px)",
+        "width": 1280,
+        "height": 960,
+        "sources": {
+          "image/avif": "/assets/img/editorial-set/corp-gift-wide-640.c62552b2.avif 640w, /assets/img/editorial-set/corp-gift-wide-1280.7c31431c.avif 1280w",
+          "image/webp": "/assets/img/editorial-set/corp-gift-wide-640.820348c4.webp 640w, /assets/img/editorial-set/corp-gift-wide-1280.bd722eb4.webp 1280w"
+        }
+      },
+      {
+        "sizes": "(min-width: 1920px) 936px, (min-width: 641px) 48vw, calc(100vw - 32px)",
+        "width": 1920,
+        "height": 2560,
+        "sources": {
+          "image/avif": "/assets/img/editorial-set/corp-gift-base-480.c5ebcec0.avif 480w, /assets/img/editorial-set/corp-gift-base-720.00274f08.avif 720w, /assets/img/editorial-set/corp-gift-base-960.13a02568.avif 960w, /assets/img/editorial-set/corp-gift-base-1200.5afaab6c.avif 1200w, /assets/img/editorial-set/corp-gift-base-1600.adbc1b7e.avif 1600w, /assets/img/editorial-set/corp-gift-base-1920.587f1bbf.avif 1920w",
+          "image/webp": "/assets/img/editorial-set/corp-gift-base-480.900ef750.webp 480w, /assets/img/editorial-set/corp-gift-base-720.9fbadfad.webp 720w, /assets/img/editorial-set/corp-gift-base-960.dbda1bce.webp 960w, /assets/img/editorial-set/corp-gift-base-1200.cfe57a0f.webp 1200w, /assets/img/editorial-set/corp-gift-base-1600.06808551.webp 1600w, /assets/img/editorial-set/corp-gift-base-1920.714db9cb.webp 1920w"
+        }
+      }
+    ],
+    "width": 1920,
+    "height": 2560,
+    "fallback": "/assets/img/editorial-set/corp-gift-base-480.900ef750.webp"
+  },
+  "hero": {
+    "variants": [
+      {
+        "sizes": "100vw",
+        "width": 3200,
+        "height": 2133,
+        "sources": {
+          "image/avif": "/assets/img/editorial-set/hero-base-1280.82376d56.avif 1280w, /assets/img/editorial-set/hero-base-1600.3d9f57f0.avif 1600w, /assets/img/editorial-set/hero-base-1920.cc7b2ab6.avif 1920w, /assets/img/editorial-set/hero-base-2560.a42bf9f5.avif 2560w, /assets/img/editorial-set/hero-base-3200.566947bb.avif 3200w",
+          "image/webp": "/assets/img/editorial-set/hero-base-1280.d711f8ab.webp 1280w, /assets/img/editorial-set/hero-base-1600.f6593f65.webp 1600w, /assets/img/editorial-set/hero-base-1920.cc305ff3.webp 1920w, /assets/img/editorial-set/hero-base-2560.f0163606.webp 2560w, /assets/img/editorial-set/hero-base-3200.0ab25914.webp 3200w"
+        }
+      }
+    ],
+    "width": 3200,
+    "height": 2133,
+    "fallback": "/assets/img/editorial-set/hero-base-1280.d711f8ab.webp"
+  }
+}

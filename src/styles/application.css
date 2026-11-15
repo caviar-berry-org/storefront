@@ -1,0 +1,211 @@
+body {
+  background: var(--b-bg);
+  color: var(--b-ink);
+  font-weight: 300;
+}
+fieldset {
+  border: 0;
+  min-width: 0;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+dialog.layer {
+  border: 0;
+  margin: 0;
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100%;
+  color: var(--ink);
+  background: transparent;
+}
+dialog.layer:focus {
+  outline: none;
+}
+dialog.layer:not([open]) {
+  display: none;
+}
+dialog.layer::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(3px);
+}
+.rm dialog.layer::backdrop {
+  backdrop-filter: none;
+}
+dialog.layer .panel {
+  opacity: 1;
+  transform: none;
+}
+dialog.layer--side {
+  justify-content: flex-end;
+}
+.skip-link {
+  position: fixed;
+  z-index: 5000;
+  left: 16px;
+  top: max(8px, env(safe-area-inset-top));
+  padding: 12px;
+  background: white;
+  clip-path: inset(50%);
+}
+.skip-link:focus-visible {
+  clip-path: none;
+}
+.product-page {
+  padding-top: calc(88px + env(safe-area-inset-top));
+}
+.product-back {
+  margin: 0 16px 20px;
+}
+@media (max-width: 640px) {
+  .product-page {
+    padding-top: calc(48px + env(safe-area-inset-top));
+  }
+}
+.product-packs {
+  width: 100%;
+}
+.product-packs .pack {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+.product-packs input {
+  position: absolute;
+  opacity: 0;
+}
+.product-packs .pack:has(:focus-visible) {
+  outline: 2px solid var(--b-gold);
+  outline-offset: 3px;
+  z-index: 2;
+}
+.jar > img {
+  width: 100%;
+  height: 100%;
+}
+.pp-gal > button {
+  padding: 0;
+  width: 100%;
+}
+.ci .mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.mobile-menu .panel {
+  padding: env(safe-area-inset-top) var(--gutter)
+    calc(32px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+}
+.mobile-menu nav {
+  color: var(--b-ink);
+  display: grid;
+  margin-top: 16px;
+}
+.mobile-menu nav a {
+  padding: 10px 0;
+  font-family: var(--b-cond);
+  font-size: 26px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  border-bottom: 1px dotted var(--b-dot);
+  text-decoration: none;
+}
+.mobile-menu-foot > a {
+  color: var(--b-ink);
+  font-weight: 400;
+  font-size: 18px;
+  text-decoration: none;
+}
+.mobile-menu-foot [aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+.mobile-menu-foot [role="group"] a {
+  min-width: 40px;
+  letter-spacing: 0.12em;
+}
+@media (max-width: 640px) {
+  .mobile-menu-foot > a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+  }
+}
+.art {
+  max-width: 900px;
+  padding: 70px 32px 40px;
+}
+.art h2 {
+  margin-bottom: 32px;
+}
+.art .b-link {
+  margin-top: 32px;
+}
+
+.about-toggle .acc-ico {
+  display: none;
+}
+.hist-more {
+  display: none;
+}
+.status-page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 120px 24px 60px;
+  text-align: center;
+}
+.status-page .b-p {
+  max-width: 520px;
+}
+.status-code {
+  font: 160px/0.8 var(--b-cond);
+  color: var(--b-gold);
+}
+.status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+}
+.return-countdown {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 24px;
+}
+
+@media (max-width: 640px) {
+  .about-toggle .acc-ico {
+    display: block;
+  }
+  .hist-more {
+    display: inline-flex;
+  }
+  .art {
+    padding-inline: 20px;
+  }
+}
+
+dialog.mobile-menu {
+  justify-content: flex-start;
+}
+dialog.mobile-menu .panel {
+  width: min(420px, 86vw);
+  background: var(--b-bg);
+}
+
+body:has(input:focus, textarea:focus) .floating-contact {
+  visibility: hidden;
+}
+.static .floating-contact {
+  display: none;
+}

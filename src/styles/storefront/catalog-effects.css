@@ -1,0 +1,48 @@
+.tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 459/765;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.tile-tin {
+  background: #fff;
+}
+.tile-tin .jar {
+  position: absolute;
+  left: 17%;
+  top: 50%;
+  width: 66%;
+  transform: translateY(-50%);
+  transition: transform 1.2s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tile-tin:hover .jar {
+    transform: translateY(-50%) scale(1.05) rotate(-6deg);
+  }
+}
+.tile-tin:focus-visible .jar {
+  transform: translateY(-50%) scale(1.05) rotate(-6deg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tile-tin:hover .jar[data-ready] .lid,
+  .col-card:hover .jar[data-ready] .lid {
+    transform: translate(44%, -40%) rotate(38deg);
+  }
+}
+.tile-tin:focus-visible .jar[data-ready] .lid,
+.col-card.t-open .jar[data-ready] .lid {
+  transform: translate(44%, -40%) rotate(38deg);
+}
+@media (max-width: 760px) {
+  .tile {
+    aspect-ratio: 3/4;
+  }
+}

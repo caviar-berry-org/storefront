@@ -1,0 +1,333 @@
+.page {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.builder {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.builderRow {
+  composes: fieldRow from "../staff.module.css";
+  align-items: start;
+}
+
+.builderRow > label:last-of-type {
+  flex: 1 1 220px;
+}
+
+.links {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--border);
+  list-style: none;
+  overflow: hidden;
+}
+
+.links li {
+  display: grid;
+  grid-template-columns: minmax(0, 110px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 9px 14px;
+  background: var(--card);
+}
+
+.linkSource {
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.links code {
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+/* Each row is one copy action, so the button must stay visible. */
+.links button {
+  opacity: 1;
+}
+
+.checks {
+  display: grid;
+  gap: 16px 24px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  margin: 0;
+}
+
+.checks div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.checks dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.checks dd {
+  margin: 0;
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+
+.checks .detail {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+/* A hint and the jump that follows from it, on one baseline. */
+.jumps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.jumps a {
+  color: var(--accent-ink);
+  font-weight: 600;
+  text-underline-offset: 0.2em;
+}
+
+.channels {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.channels :is(th, td) {
+  padding: 9px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.channels thead th {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.channels tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.channels td:not(:first-child) {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.note,
+.hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* Channel report: organ pipes, one per acquisition channel. The chart shows the
+   shape of the period; the list under it is the same numbers as plain text. */
+.periodRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+}
+
+.periodTabs {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.periodTabs a {
+  padding: 5px 14px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.periodTabs a[aria-current="page"] {
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgb(23 24 27 / 12%);
+}
+
+.range {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.chart {
+  margin: 0;
+}
+
+.chartScroll {
+  min-width: 0;
+}
+
+.chartScroll[data-scrolls] {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+/* The sheet scales to its container, so a wide panel would blow the chart's
+   labels up past the panel's own type. Cap it near its natural size instead. */
+.chartSvg {
+  display: block;
+  width: 100%;
+  max-width: 620px;
+  height: auto;
+  overflow: visible;
+}
+
+.chartBase,
+.chartGrid,
+.chartAverage {
+  fill: none;
+}
+
+.chartBase {
+  stroke: var(--ink);
+  stroke-width: 1.1;
+}
+
+.chartGrid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.chartAverage {
+  stroke: var(--accent-ink);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+  opacity: 0.75;
+}
+
+.chartPipe,
+.chartPipeLead {
+  stroke: var(--ink);
+  stroke-width: 1.1;
+}
+
+.chartPipe {
+  fill: #e3d4ae;
+}
+
+/* The strongest channel carries the one accent on the sheet. */
+.chartPipeLead {
+  fill: var(--gold);
+}
+
+.chartTick,
+.chartLabel,
+.chartShare,
+.chartAverageLabel {
+  fill: var(--muted);
+  font-size: 11px;
+}
+
+.chartValue {
+  fill: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.chartLabel {
+  fill: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.chartAverageLabel {
+  fill: var(--accent-ink);
+  font-size: 10.5px;
+}
+
+.breakdown {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--border);
+  list-style: none;
+  overflow: hidden;
+}
+
+.breakdown li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  align-items: baseline;
+  gap: 4px 14px;
+  padding: 9px 14px;
+  background: var(--card);
+  font-size: 0.86rem;
+}
+
+.breakdownName {
+  min-width: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.breakdownCount,
+.breakdownShare,
+.breakdownRevenue {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.breakdownShare {
+  min-width: 3.4em;
+  color: var(--muted);
+}
+
+.breakdownRevenue {
+  min-width: 6em;
+  color: var(--muted);
+}
+
+.breakdownTotal {
+  background: var(--surface);
+  font-weight: 700;
+}
+
+.breakdownTotal .breakdownShare,
+.breakdownTotal .breakdownRevenue {
+  color: var(--ink);
+}
+
+@media (max-width: 560px) {
+  .breakdown li {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+  .breakdownRevenue {
+    grid-column: 2 / -1;
+  }
+}

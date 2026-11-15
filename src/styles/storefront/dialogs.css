@@ -1,0 +1,243 @@
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  opacity: 0;
+  transition: opacity 0.35s;
+  overscroll-behavior: contain;
+}
+.layer[hidden] {
+  display: none;
+}
+.layer.is-open {
+  opacity: 1;
+}
+.panel {
+  position: relative;
+  background: var(--bg);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.x {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+  background: var(--bg);
+}
+.x::before,
+.x::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 1.5px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+.x::after {
+  transform: rotate(-45deg);
+}
+.qty button {
+  width: 48px;
+  height: 48px;
+  font-size: 22px;
+}
+
+.layer--modal {
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0px, 3vw, 40px);
+}
+.layer--modal .panel {
+  width: min(1120px, 100%);
+  max-height: 100%;
+  transform: translateY(24px);
+  transition: transform 0.5s var(--ease);
+}
+.layer--modal.is-open .panel {
+  transform: none;
+}
+@media (max-width: 760px) {
+  .layer--modal {
+    padding: 0;
+  }
+}
+@media (max-width: 760px) {
+  .layer--modal .panel {
+    height: 100%;
+  }
+}
+.layer--side {
+  justify-content: flex-end;
+}
+.layer--side .panel {
+  width: min(480px, 100%);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.55s var(--ease);
+}
+.layer--side.is-open .panel {
+  transform: none;
+}
+.layer--full .panel {
+  width: 100%;
+  height: 100%;
+  transform: translateY(16px);
+  transition: transform 0.5s var(--ease);
+}
+.layer--full.is-open .panel {
+  transform: none;
+}
+.layer--pop {
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.layer--pop .panel {
+  width: min(560px, 100%);
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  transform: translateY(20px);
+  transition: transform 0.5s var(--ease);
+}
+.layer--pop.is-open .panel {
+  transform: none;
+}
+.layer--pop .panel {
+  align-items: stretch;
+  max-height: 100%;
+  overflow: auto;
+}
+@media (max-width: 560px) {
+  .layer--pop {
+    align-items: flex-end;
+    padding: 0;
+  }
+}
+@media (max-width: 560px) {
+  .layer--pop .panel {
+    grid-template-columns: 1fr;
+    transform: translateY(100%);
+  }
+}
+.layer--modal .art {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(64px, 7vw, 88px) clamp(20px, 4vw, 48px) 48px;
+}
+@keyframes dialog-enter {
+  from {
+    opacity: 0;
+    translate: 0 20px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes drawer-enter {
+  from {
+    translate: 100% 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+dialog[open] > .panel {
+  animation: dialog-enter 0.45s var(--ease);
+}
+dialog.layer--side[open] > .panel {
+  animation-name: drawer-enter;
+}
+dialog.mobile-menu[open] > .panel {
+  animation-name: menu-enter;
+}
+@keyframes menu-enter {
+  from {
+    translate: -100% 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog[open] > .panel {
+    animation: none;
+  }
+}
+.layer--modal .panel > .x,
+.layer--full .panel > .x {
+  position: sticky;
+  top: 10px;
+  float: right;
+  margin: 10px 10px -58px 0;
+}
+dialog#cart {
+  overflow: clip;
+}
+dialog#cart[open] > .panel {
+  animation: drawer-enter 0.45s var(--ease) both;
+}
+dialog#cart[open]::backdrop {
+  backdrop-filter: none;
+  animation: cart-shade-in 0.45s ease both;
+}
+dialog#cart[data-closing] > .panel {
+  pointer-events: none;
+  animation: drawer-exit 0.35s ease both;
+}
+dialog#cart[data-closing]::backdrop {
+  animation: cart-shade-out 0.35s ease both;
+}
+@keyframes drawer-exit {
+  from {
+    translate: var(--exit-translate, 0 0);
+  }
+  to {
+    translate: 100% 0;
+  }
+}
+@keyframes cart-shade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes cart-shade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog#cart[open] > .panel,
+  dialog#cart[open]::backdrop {
+    animation: none;
+  }
+}
+
+.submission-dialog[data-closing] > .panel {
+  animation: submission-exit 180ms ease both;
+  pointer-events: none;
+}
+.submission-dialog[data-closing]::backdrop {
+  animation: cart-shade-out 180ms ease both;
+}
+@keyframes submission-exit {
+  to {
+    opacity: 0;
+    translate: 0 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .submission-dialog[data-closing] > .panel,
+  .submission-dialog[data-closing]::backdrop {
+    animation: none;
+  }
+}

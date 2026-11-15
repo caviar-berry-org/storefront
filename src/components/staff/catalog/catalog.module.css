@@ -1,0 +1,594 @@
+.controls,
+.rowActions,
+.fieldTitle,
+.amount,
+.tabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.fieldTitle h2 {
+  margin: 0;
+}
+.controls {
+  margin-block: 12px;
+}
+/*
+ * `auto-fill`, not `auto-fit`: `auto-fit` collapses the empty tracks, so a tab
+ * holding a single archived product stretched that one card across the whole
+ * page. The track also has a real maximum — staff scan these, and a catalogue
+ * card has no more to show at 600 px than at 240 px.
+ */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 240px));
+  justify-content: start;
+  gap: 12px;
+}
+.group {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  overflow-wrap: anywhere;
+}
+.card h3,
+.card p {
+  margin: 0;
+}
+.card .rowActions {
+  margin-top: auto;
+  padding-top: 6px;
+}
+.image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3/2;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.form,
+.group,
+.field {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.form {
+  width: 100%;
+}
+.field {
+  gap: 4px;
+}
+.field input:not([type="checkbox"]),
+.field textarea,
+.field select {
+  min-width: 0;
+  width: 100%;
+  min-height: 42px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--card);
+}
+.field textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+.field select[multiple] {
+  min-height: 110px;
+}
+.field input[aria-invalid="true"],
+.field textarea[aria-invalid="true"] {
+  border-color: #9c3030;
+}
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+}
+.item {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+}
+.item legend {
+  padding-inline: 6px;
+}
+.button,
+.primary,
+.danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+}
+.primary {
+  background: var(--accent-ink);
+  color: var(--card);
+  border-color: var(--accent-ink);
+}
+.danger {
+  color: #8c2424;
+  border-color: #b87171;
+}
+.button:hover:enabled,
+.danger:hover:enabled,
+.primary:hover:enabled {
+  box-shadow: inset 0 0 0 1px var(--gold);
+}
+.button:disabled,
+.danger:disabled,
+.primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.error {
+  color: #8c2424;
+  margin: 0;
+}
+.muted {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.status {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+.modal {
+  width: min(440px, calc(100% - 28px));
+  border: 1px solid var(--border);
+  padding: 20px;
+  border-radius: 12px;
+  color: var(--ink);
+  background: var(--card);
+}
+.modal::backdrop {
+  background: #0007;
+}
+
+.item[data-selected="true"] {
+  border-color: var(--accent-ink);
+}
+
+.disclosure {
+  position: relative;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.summary {
+  display: block;
+  padding: 12px 16px;
+  border-radius: 11px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure[data-has-help] .summary {
+  padding-inline-end: 64px;
+}
+
+.summary:hover {
+  background: var(--surface);
+}
+
+.summary h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.summary h2 > svg {
+  flex: none;
+  color: var(--accent-ink);
+}
+
+.disclosure details[open] .summary {
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.disclosure details[open] .summary h2 > svg {
+  transform: rotate(90deg);
+}
+
+.sectionBody {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.sectionHelp {
+  position: absolute;
+  inset-block-start: 6px;
+  inset-inline-end: 8px;
+}
+
+.imageRow {
+  display: grid;
+  grid-template-columns: minmax(0, 104px) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.imageRows:not([hidden]) {
+  display: grid;
+  gap: 12px;
+}
+
+.thumbnail {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  place-items: center;
+  height: 72px;
+  overflow: hidden;
+  color: var(--muted);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.imageControls {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.imageTitle {
+  font-weight: 600;
+}
+
+.uploadActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fileButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.fileButton:hover {
+  border-color: var(--gold);
+}
+
+.fileButton:focus-within {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+
+.fileButton input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.fileButton:has(input:disabled) {
+  opacity: 0.5;
+}
+
+@media (max-width: 420px) {
+  .imageRow {
+    grid-template-columns: minmax(0, 64px) minmax(0, 1fr);
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .thumbnail {
+    height: 56px;
+  }
+
+  .sectionBody {
+    padding: 12px;
+  }
+}
+
+.iconAction {
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  place-items: center;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.iconAction.danger {
+  color: #8c2424;
+  border-color: #b87171;
+}
+
+.iconAction:hover {
+  background: var(--surface);
+}
+
+.actionHint {
+  position: relative;
+  display: inline-flex;
+}
+
+.actionHint > span {
+  position: absolute;
+  z-index: 2;
+  inset-block-end: calc(100% + 5px);
+  inset-inline-start: 50%;
+  padding: 5px 8px;
+  color: var(--card);
+  border-radius: 5px;
+  background: var(--ink);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%);
+}
+
+.actionHint:has(:focus-visible) > span {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .actionHint:hover > span {
+    opacity: 1;
+  }
+}
+
+.inventoryScroll {
+  position: relative;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.inventoryTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: start;
+  font-size: 0.9rem;
+}
+
+.inventoryTable :is(th, td) {
+  padding: 8px 12px;
+  text-align: start;
+}
+
+.inventoryTable thead {
+  color: var(--muted);
+}
+
+.inventoryTable tr[data-pack-start] {
+  border-top: 1px solid var(--border);
+}
+
+.inventoryTable tr[data-expiry-warning] {
+  background: #fcf0ef;
+}
+
+.inventoryTable tr[data-expired] {
+  background: #f8d9d5;
+}
+
+.inventoryTable tr[data-expired] time {
+  color: #841a17;
+}
+
+.inventoryWarning {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #9c2422;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.inventoryWarning svg {
+  width: 14px;
+  height: 14px;
+}
+
+.priceBoundary {
+  position: relative;
+  display: block;
+  min-width: 86px;
+}
+
+.field .priceBoundary select {
+  appearance: none;
+  padding-inline: 12px 34px;
+}
+
+.priceBoundary svg {
+  position: absolute;
+  inset-block-start: calc(50% - 9px);
+  inset-inline-end: 10px;
+  width: 18px;
+  height: 18px;
+  color: var(--accent-ink);
+  pointer-events: none;
+  transform: rotate(90deg);
+}
+
+.packPicker {
+  container-type: inline-size;
+}
+
+.packSummary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  cursor: pointer;
+  list-style: none;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
+.packSummary::-webkit-details-marker {
+  display: none;
+}
+
+.packSummary svg {
+  flex: none;
+  color: var(--accent-ink);
+}
+
+.packPicker[open] > .packSummary svg {
+  transform: rotate(90deg);
+}
+
+.packChoices {
+  display: grid;
+  gap: 6px;
+  margin-block: 6px;
+}
+
+.packChoice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.packChoice input {
+  flex: none;
+  margin: 0;
+  accent-color: var(--accent-ink);
+}
+
+.packChoice:has(input:checked) {
+  border-color: var(--gold);
+  background: var(--surface);
+}
+
+@container (min-width: 400px) {
+  .packChoices {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 660px) {
+  .packChoices {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.stockSummary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  color: var(--muted);
+}
+
+.stockSummary output {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+}
+
+.batchRow {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: start;
+  padding: 8px 10px 10px;
+}
+
+.batchRemove {
+  margin-block-start: calc(1.5em + 4px);
+  padding-inline: 10px;
+}
+
+@media (max-width: 640px) {
+  .batchRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .batchRemove {
+    justify-self: end;
+  }
+}
+
+.inventoryGroups {
+  display: grid;
+  gap: 10px;
+}
+
+.inventoryActions {
+  display: flex;
+  gap: 6px;
+}
+
+.expiryBadge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #f2c1bb;
+  color: #841a17;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: normal;
+}

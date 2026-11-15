@@ -1,0 +1,10 @@
+.next
+node_modules
+public/assets
+.local
+AGENTS.md
+package-lock.json
+next-env.d.ts
+playwright-report
+.playwright-cli
+test-results

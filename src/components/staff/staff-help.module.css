@@ -1,0 +1,50 @@
+.help {
+  position: relative;
+  margin-inline-start: auto;
+}
+
+.help:has([role="tooltip"]) {
+  z-index: 10;
+}
+
+.help button {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  color: var(--accent-ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.help button:hover {
+  border-color: var(--gold);
+}
+
+.help p {
+  position: absolute;
+  inset: 100% 0 auto auto;
+  width: min(270px, calc(100vw - 40px));
+  margin: 0;
+  padding: 12px;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  box-shadow: 0 9px 25px #17181b12;
+  font-size: 0.78rem;
+  /* Long notes carry their own paragraph breaks. */
+  white-space: pre-line;
+}
+
+.help[data-compact] button {
+  width: 32px;
+  height: 32px;
+  border-color: transparent;
+}
+
+.help[data-compact] svg {
+  width: 16px;
+  height: 16px;
+}

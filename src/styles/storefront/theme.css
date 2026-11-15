@@ -1,0 +1,187 @@
+@font-face {
+  font-family: "UCB Script";
+  src: local("Snell Roundhand"), local("SnellRoundhand");
+  font-display: swap;
+}
+:root {
+  --b-bg: #f2f2f2;
+  --b-ink: #202020;
+  --b-mute: #6e6c69;
+  --b-dot: #a9a59f;
+  --b-sans: "Montserrat", system-ui, sans-serif;
+  --b-cond: "EB Garamond", Georgia, serif;
+  --b-gold: #a8834a;
+  --b-gold-d: #8a6a36;
+  --b-gold-l: #cdaa6e;
+  --b-wide: "Unbounded", system-ui, sans-serif;
+  --b-script: "UCB Script", "Marck Script", cursive;
+}
+.v-b {
+  display: none;
+}
+[data-variant="b"] > .v-b {
+  display: block;
+}
+[data-block][data-variant="b"]:not(.hdr) {
+  padding: 0 !important;
+  background: var(--b-bg) !important;
+  color: var(--b-ink);
+  border: 0 !important;
+  display: block !important;
+  font-family: var(--b-sans);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.4;
+}
+.v-b a {
+  color: inherit;
+}
+.v-b a.b-btn {
+  color: var(--b-bg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .v-b a.b-btn:hover {
+    color: var(--b-ink);
+  }
+}
+:root {
+  --sec-gap: clamp(56px, 6.6vw, 96px);
+}
+#ikra .b-sec {
+  padding-top: var(--sec-gap);
+}
+@media (max-width: 560px) {
+  .b-h2 .l2 {
+    font-size: 1.22em;
+    line-height: 0.82;
+    margin-top: -0.28em;
+  }
+}
+.b-h2:has(.l2) {
+  width: fit-content;
+  text-align: center;
+}
+.b-h2 .l2 {
+  display: block;
+  position: relative;
+  z-index: 1;
+  font-family: var(--b-script);
+  color: var(--b-gold);
+  text-transform: none;
+  font-weight: 400;
+  font-size: 1.45em;
+  line-height: 0.8;
+  margin: -0.4em 0 0;
+  letter-spacing: 0;
+}
+.b-center {
+  text-align: left;
+}
+.b-h2-mid {
+  margin-left: auto;
+  margin-right: auto;
+}
+.b-h2.b-h2-left:has(.l2) {
+  text-align: left;
+}
+.b-center .l2 {
+  margin-left: 0;
+}
+.b-p b {
+  font-weight: 600;
+  color: var(--b-gold-d);
+}
+.b-lead-c.b-lead-full {
+  max-width: none;
+}
+.b-lead-c.b-lead-mid {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.b-h2.b-h2-air {
+  line-height: 1.12;
+}
+.b-h2.b-h2-air .l2 {
+  line-height: 1.05;
+  margin-top: 0.1em;
+}
+.arr {
+  width: 22px;
+  height: 9px;
+  flex: none;
+  margin-bottom: 4px;
+  transition: transform 0.6s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .b-link:hover .arr,
+  .blogb-item:hover .arr {
+    transform: translateX(6px);
+  }
+}
+.b-btn {
+  transition:
+    background 0.4s,
+    color 0.4s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .b-btn:hover {
+    background: transparent;
+    color: var(--b-ink);
+  }
+}
+.v-b a.b-btn {
+  color: var(--b-bg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .v-b a.b-btn:hover {
+    color: var(--b-ink);
+  }
+}
+.b-btn[disabled] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.ph-b {
+  position: absolute;
+  inset: 0;
+}
+.px {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -10%;
+  height: 120%;
+}
+.fx-on .v-b .fx [data-px],
+.fx-on .v-b .fx[data-px] {
+  position: fixed;
+  top: 0;
+  left: var(--pl, 0px);
+  right: auto;
+  width: var(--pw, 100%);
+  height: 100vh;
+  height: 100lvh;
+  transform: none !important;
+}
+.fx-on :where(.v-b .fx :has(> [data-px]), .v-b .fx:has(> [data-px])) {
+  clip-path: inset(0);
+}
+.fx-on .v-b .fx .b-rv,
+.fx-on .v-b .fx.b-rv {
+  transform: none !important;
+  transition: opacity 1.2s var(--ease) !important;
+}
+.media-c .badge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  color: #f2f2f2;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.b-link:focus-visible .arr {
+  transform: translateX(6px);
+}

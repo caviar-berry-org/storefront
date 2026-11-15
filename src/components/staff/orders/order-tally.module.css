@@ -1,0 +1,81 @@
+/*
+ * The same material as the dashboard widgets — border, radius, card, tabular
+ * figures — but flattened into a reading strip. These are a summary, not a
+ * destination: nothing here is clickable and nothing carries a tooltip.
+ */
+.tally {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-block: 2px 12px;
+}
+
+.cell {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-inline-size: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-inline-start: 3px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.figure {
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* Same meanings as the row tints, so the two read as one language. */
+.cell[data-tone="done"] {
+  border-inline-start-color: #5c9c62;
+}
+
+.cell[data-tone="problem"] {
+  border-inline-start-color: #b4624f;
+}
+
+.cell[data-tone="open"] {
+  border-inline-start-color: #d0a94f;
+}
+
+.cell[data-tone="new"] {
+  border-inline-start-color: var(--accent-ink);
+}
+
+.stamp {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+@media (max-width: 900px) {
+  .tally {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .tally {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+}

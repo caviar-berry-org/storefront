@@ -1,0 +1,125 @@
+#checkout[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: var(--bg);
+}
+.checkout-actions {
+  position: relative;
+  width: min(100%, var(--container));
+  justify-self: center;
+  min-height: calc(58px + env(safe-area-inset-top));
+}
+.checkout-actions .x {
+  top: calc(10px + env(safe-area-inset-top));
+}
+.checkout-back {
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top));
+  left: var(--gutter);
+  align-items: center;
+  padding-block: 0;
+}
+.co {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: clamp(24px, 5vw, 80px);
+  max-width: var(--container);
+  margin-inline: auto;
+  padding: clamp(14px, calc(8vw - 58px), 38px) var(--gutter) 48px;
+}
+.co form {
+  display: grid;
+}
+.co form > .btn,
+.co form > .form-err,
+.checkout-feedback {
+  margin-block-start: 20px;
+}
+.checkout-fields {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr);
+  margin-block-start: 20px;
+}
+.checkout-fields > .field:has(> input) {
+  padding-block-end: 6px;
+}
+.co fieldset:not(.checkout-fields) {
+  border: 0;
+  display: grid;
+  gap: 8px;
+}
+.co fieldset.field > .form-feedback {
+  margin-block-start: -8px;
+}
+.co .checkout-consent {
+  font-size: 15px;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--ink-2);
+}
+.checkout-note {
+  color: var(--muted);
+  font-size: 14px;
+}
+.checkout-payment-options label {
+  padding-inline: 10px;
+}
+.checkout-payment-options {
+  display: grid;
+  width: fit-content;
+  max-width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+.checkout-payment-options label {
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* One row where it fits; otherwise equal columns, so a wrapped option keeps
+     the width of the one above it. */
+  .checkout-payment-options {
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+}
+.co fieldset:has(> .checkout-payment-options) > legend {
+  margin-bottom: 10px;
+}
+.co-sum {
+  align-self: start;
+  position: sticky;
+  top: 24px;
+  padding: 24px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 400;
+}
+.co-sum .summary-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.co-sum .summary-line span:last-child {
+  text-align: end;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .co {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .co-sum {
+    position: static;
+    order: -1;
+  }
+}
+@media (max-width: 560px) {
+  .co .btn {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.3;
+    padding-block: 12px;
+  }
+}

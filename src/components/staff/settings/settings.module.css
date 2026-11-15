@@ -1,0 +1,182 @@
+.page {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  container-type: inline-size;
+}
+
+.summary {
+  margin: 0;
+  max-width: 68ch;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.services {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 232px), 1fr));
+  gap: 12px;
+}
+
+.service {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  overflow-wrap: anywhere;
+}
+
+.service[data-wide] {
+  margin-top: 2px;
+}
+
+/* The help button stays level with the title, never pushing it aside. */
+.service header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.service h3 {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 650;
+}
+
+.service p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* One link per line: two kept inline wrapped into a ragged block. */
+.serviceLinks {
+  display: grid;
+  gap: 2px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.serviceLinks a {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 34px;
+  color: var(--accent-ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-underline-offset: 0.2em;
+}
+
+/* Keys are the one thing here that must not be copied around. */
+.keyWarning {
+  padding: 9px 12px;
+  color: #842b27;
+  border: 1px solid #e7c8c3;
+  border-radius: 8px;
+  background: #fdf4f3;
+  font-size: 0.82rem;
+}
+
+.service .keyWarning {
+  color: #842b27;
+}
+
+/* One row: address, role, action. Nothing between the operator and the deed. */
+.invite {
+  composes: fieldRow from "../staff.module.css";
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.invite > label:first-child {
+  flex: 1 1 240px;
+}
+
+.membersTitle {
+  margin: 4px 0 10px;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.members {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.members li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+.memberIdentity {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.memberIdentity strong {
+  font-size: 0.96rem;
+  font-weight: 650;
+}
+
+.memberIdentity span,
+.memberSignIn {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.memberBadges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 6px;
+}
+
+.memberSignIn {
+  grid-column: 1;
+}
+
+.memberActions {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  grid-column: 2;
+  grid-row: 2;
+}
+
+@container (max-width: 560px) {
+  .members li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .memberBadges,
+  .memberActions {
+    justify-content: flex-start;
+  }
+
+  .memberActions {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}

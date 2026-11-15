@@ -1,0 +1,358 @@
+{
+  "/assets/jars/premium.svg": {
+    "width": 200,
+    "height": 200
+  },
+  "/assets/jars/hybrid.svg": {
+    "width": 200,
+    "height": 200
+  },
+  "/assets/jars/sterlet.svg": {
+    "width": 200,
+    "height": 200
+  },
+  "/assets/jars/trout.svg": {
+    "width": 200,
+    "height": 200
+  },
+  "/assets/logos/bassano-color.png": {
+    "width": 866,
+    "height": 186
+  },
+  "/assets/logos/opera-color.webp": {
+    "width": 640,
+    "height": 309
+  },
+  "/assets/logos/socar-color.webp": {
+    "width": 2000,
+    "height": 535
+  },
+  "/assets/logos/okwine-color.png": {
+    "width": 738,
+    "height": 210
+  },
+  "/assets/img/serve-premium.jpg": {
+    "width": 1400,
+    "height": 933
+  },
+  "/assets/img/footer-bassano.jpg": {
+    "width": 2000,
+    "height": 1311
+  },
+  "/assets/img/editorial/quality/water-chernivtsi.jpg": {
+    "width": 1400,
+    "height": 928
+  },
+  "/assets/img/editorial/quality/water-zakarpattia.jpg": {
+    "width": 1400,
+    "height": 930
+  },
+  "/assets/img/editorial/quality/water-stream.jpg": {
+    "width": 1400,
+    "height": 933
+  },
+  "/assets/img/editorial/journal/blog-jar.jpg": {
+    "width": 934,
+    "height": 1400
+  },
+  "/assets/img/gift-box.jpg": {
+    "width": 934,
+    "height": 1400
+  },
+  "/assets/img/editorial/story/farm-aerial-poster.jpg": {
+    "width": 1600,
+    "height": 900
+  },
+  "/assets/img/editorial/quality/bere-farm2-poster.jpg": {
+    "width": 1280,
+    "height": 720
+  },
+  "/assets/img/editorial/quality/water-volyn.jpg": {
+    "width": 1400,
+    "height": 940
+  },
+  "/assets/img/editorial/story/hist-farm.jpg": {
+    "width": 1800,
+    "height": 1199
+  },
+  "/assets/img/editorial/story/about-mama.jpg": {
+    "width": 934,
+    "height": 1400
+  },
+  "/assets/img/corp-gift.jpg": {
+    "width": 1400,
+    "height": 934
+  },
+  "/assets/img/prod/red-food1-plate.jpg": {
+    "width": 784,
+    "height": 980
+  },
+  "/assets/img/prod/ster-food.jpg": {
+    "width": 1600,
+    "height": 1066
+  },
+  "/assets/img/prod/red-berry.jpg": {
+    "width": 1066,
+    "height": 1600
+  },
+  "/assets/img/prod/prem-berry-lid.jpg": {
+    "width": 800,
+    "height": 800
+  },
+  "/assets/img/prod/bel-3.jpg": {
+    "width": 1600,
+    "height": 1066
+  },
+  "/assets/img/prod/prem-food2.jpg": {
+    "width": 1600,
+    "height": 1066
+  },
+  "/assets/img/labels/lid-premium.png": {
+    "width": 425,
+    "height": 425
+  },
+  "/assets/img/labels/lid-sterlet.png": {
+    "width": 505,
+    "height": 505
+  },
+  "/assets/img/labels/lid-hybrid.png": {
+    "width": 562,
+    "height": 558
+  },
+  "/assets/img/labels/lid-trout.png": {
+    "width": 211,
+    "height": 211
+  },
+  "/assets/logos/socar.svg": {
+    "width": 383,
+    "height": 129
+  },
+  "/assets/logos/bassano.svg": {
+    "width": 576,
+    "height": 128
+  },
+  "/assets/logos/okwine.svg": {
+    "width": 450,
+    "height": 128
+  },
+  "/assets/img/prod/hybrid/catalog-card.webp": {
+    "width": 1173,
+    "height": 1800
+  },
+  "/assets/img/prod/premium/serving.webp": {
+    "width": 1800,
+    "height": 1441
+  },
+  "/assets/img/prod/trout/catalog-card.webp": {
+    "width": 1474,
+    "height": 1800
+  },
+  "/assets/img/gifts/premium.webp": {
+    "width": 1600,
+    "height": 1067
+  },
+  "/assets/img/gifts/introduction.webp": {
+    "width": 1600,
+    "height": 1067
+  },
+  "/assets/img/faq-spoon.webp": {
+    "width": 1600,
+    "height": 1203
+  },
+  "/assets/img/editorial/journal/sturgeon-species.webp": {
+    "width": 1600,
+    "height": 1610
+  },
+  "/assets/img/editorial/journal/sturgeon-article.webp": {
+    "width": 1400,
+    "height": 3219
+  },
+  "/assets/img/editorial/journal/archive-2016-sturgeon.webp": {
+    "width": 1800,
+    "height": 849
+  },
+  "/assets/img/editorial/journal/archive-2020-poster.webp": {
+    "width": 1000,
+    "height": 563
+  },
+  "/assets/img/editorial/story/bere-farm1.webp": {
+    "width": 1800,
+    "height": 1125
+  },
+  "/assets/img/editorial/story/bere-img1696.webp": {
+    "width": 1800,
+    "height": 1129
+  },
+  "/assets/img/editorial/story/hand-spoon.webp": {
+    "width": 1800,
+    "height": 1347
+  },
+  "/assets/img/editorial/quality/step-01.webp": {
+    "width": 1600,
+    "height": 1203
+  },
+  "/assets/img/editorial/quality/step-01-origin.webp": {
+    "width": 1800,
+    "height": 1200
+  },
+  "/assets/img/editorial/quality/step-05.webp": {
+    "width": 1600,
+    "height": 1203
+  },
+  "/assets/img/editorial/quality/step-04.webp": {
+    "width": 1600,
+    "height": 1203
+  },
+  "/assets/img/editorial/quality/step-03.webp": {
+    "width": 1600,
+    "height": 1203
+  },
+  "/assets/img/editorial/quality/step-02.webp": {
+    "width": 1600,
+    "height": 1203
+  },
+  "/assets/img/prod/hybrid/detail-100g.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/hybrid/detail-400g.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/hybrid/detail-50g.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/hybrid/detail-extra-1.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/premium/detail-100g.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/premium/detail-400g.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/premium/detail-50g.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/premium/detail-extra-1.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/sterlet/detail-100g.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/sterlet/detail-50g.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/sterlet/detail-extra-1.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/trout/detail-100g.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/trout/detail-200g.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/trout/detail-500g.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/trout/detail-extra-1.webp": {
+    "width": 2204,
+    "height": 1764
+  },
+  "/assets/img/prod/trout/detail-extra-2-full.webp": {
+    "width": 2146,
+    "height": 1764
+  },
+  "/assets/img/gifts/tasting-full.webp": {
+    "width": 2000,
+    "height": 1344
+  },
+  "/assets/img/catalog/sterlet-body.webp": {
+    "width": 1000,
+    "height": 1000
+  },
+  "/assets/img/catalog/trout-body.webp": {
+    "width": 1000,
+    "height": 1000
+  },
+  "/assets/img/catalog/premium-body.webp": {
+    "width": 1000,
+    "height": 1000
+  },
+  "/assets/img/catalog/premium-card.webp": {
+    "width": 1042,
+    "height": 1300
+  },
+  "/assets/img/catalog/sterlet-card.webp": {
+    "width": 1042,
+    "height": 1300
+  },
+  "/assets/img/catalog/trout-card.webp": {
+    "width": 1106,
+    "height": 1300
+  },
+  "/assets/img/catalog/hybrid-lid.webp": {
+    "width": 562,
+    "height": 558
+  },
+  "/assets/img/catalog/sterlet-lid.webp": {
+    "width": 505,
+    "height": 505
+  },
+  "/assets/img/catalog/premium-lid.webp": {
+    "width": 425,
+    "height": 425
+  },
+  "/assets/img/catalog/hybrid-card.webp": {
+    "width": 1041,
+    "height": 1300
+  },
+  "/assets/img/catalog/trout-lid.webp": {
+    "width": 844,
+    "height": 844
+  },
+  "/assets/img/catalog/hybrid-body.webp": {
+    "width": 1000,
+    "height": 1000
+  },
+  "/assets/img/hero-mobile.webp": {
+    "width": 1170,
+    "height": 1959
+  },
+  "/assets/img/history-video-poster.webp": {
+    "width": 1800,
+    "height": 1013
+  },
+  "/assets/img/nature-video-poster.webp": {
+    "width": 1800,
+    "height": 949
+  },
+  "/assets/img/editorial/journal/caviar-serving-portrait.webp": {
+    "width": 1400,
+    "height": 3219
+  },
+  "/assets/img/editorial/journal/caviar-serving-card.webp": {
+    "width": 1832,
+    "height": 1844
+  },
+  "/assets/img/editorial/quality/step-04-label.webp": {
+    "width": 1800,
+    "height": 1354
+  },
+  "/assets/img/editorial/quality/nature-water-poster.webp": {
+    "width": 1280,
+    "height": 672
+  }
+}

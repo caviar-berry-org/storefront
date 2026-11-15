@@ -1,0 +1,41 @@
+.page {
+  display: grid;
+  gap: 20px;
+}
+.introduction {
+  margin: 0;
+  color: var(--muted);
+  max-width: 85ch;
+}
+.contents,
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+.contents a,
+.links a {
+  color: var(--accent-ink);
+  text-underline-offset: 3px;
+}
+.contents a {
+  padding-block: 6px;
+}
+.section {
+  scroll-margin-top: 24px;
+  min-width: 0;
+}
+.section h3 {
+  margin: 10px 0;
+  font-size: 1rem;
+}
+.section ol,
+.section ul {
+  margin: 0;
+  padding-inline-start: 24px;
+  max-width: 100ch;
+  line-height: 1.65;
+}
+.section li + li {
+  margin-top: 10px;
+}

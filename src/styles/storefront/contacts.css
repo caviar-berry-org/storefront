@@ -1,0 +1,50 @@
+.cp-main .b-p {
+  max-width: 540px;
+  font-size: 18px;
+}
+.floating-contact-menu {
+  background: var(--b-bg);
+  border: 1px dotted var(--b-dot);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 14%);
+}
+.floating-contact-menu a {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0 18px;
+  font-family: var(--b-wide);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--b-ink);
+}
+.floating-contact-menu a + a {
+  border-top: 1px dotted var(--b-dot);
+}
+.floating-contact-menu a:is(:hover, :focus-visible) {
+  background: #e9e9e7;
+}
+.cc-season {
+  color: var(--b-gold-d);
+}
+.cc-out {
+  color: var(--b-mute);
+}
+.col-card.is-out {
+  background: #eae9e7;
+  color: var(--b-mute);
+}
+.is-out .cc-media {
+  opacity: 0.55;
+  filter: grayscale(0.6);
+}
+.notify {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+.notify .b-link {
+  justify-self: start;
+}

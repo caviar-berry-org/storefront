@@ -1,0 +1,16 @@
+.art .ph {
+  aspect-ratio: 16/9;
+  margin: 24px 0;
+}
+.art h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: calc(24px * var(--display-scale));
+  margin: 28px 0 10px;
+}
+.art p {
+  color: var(--ink-2);
+}
+.art .btn {
+  margin-top: 28px;
+}

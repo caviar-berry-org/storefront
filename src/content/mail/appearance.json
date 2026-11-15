@@ -1,0 +1,30 @@
+{
+  "light": {
+    "canvas": "#f2f0eb",
+    "card": "#fbfaf7",
+    "text": "#17181b",
+    "muted": "#5f6065",
+    "accent": "#7a6628",
+    "border": "#dedbd4",
+    "zebra": "#f5f3ee",
+    "button": "#17181b",
+    "buttonText": "#fbfaf7"
+  },
+  "dark": {
+    "canvas": "#131416",
+    "card": "#1d1e21",
+    "text": "#eeebe5",
+    "muted": "#aba8a2",
+    "accent": "#c6a66b",
+    "border": "#34353a",
+    "zebra": "#232427",
+    "button": "#eeebe5",
+    "buttonText": "#17181b"
+  },
+  "font": "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,Helvetica,sans-serif",
+  "display": "'EB Garamond',Garamond,Georgia,'Times New Roman',serif",
+  "width": 600,
+  "heading": "margin:0 0 20px;font-size:28px;line-height:1.2;font-weight:400;letter-spacing:.005em",
+  "paragraph": "margin:0 0 14px;font-size:15px;line-height:1.65;overflow-wrap:anywhere",
+  "label": "font-size:11px;letter-spacing:1.4px;text-transform:uppercase"
+}
