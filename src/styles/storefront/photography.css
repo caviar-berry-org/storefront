@@ -1,0 +1,145 @@
+.photo-stack {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.ph-img > .photo-stack {
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+}
+.photo-stack > img {
+  grid-area: 1 / 1;
+}
+.photo-stack > .photo-enter {
+  animation: photo-enter 0.3s ease both;
+}
+.photo-unavailable {
+  position: absolute;
+  z-index: 1;
+  inset-inline: 8px;
+  bottom: 8px;
+  padding: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-stack > .photo-enter {
+    animation-duration: 1ms;
+  }
+}
+@keyframes photo-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.framed-export > .px {
+  top: -4%;
+  height: 108%;
+}
+.ph-img {
+  margin: 0;
+  background: #1a1a1a;
+  overflow: hidden;
+}
+.ph-img img,
+.hb-roe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: var(--film);
+}
+:root {
+  --film: contrast(1) saturate(1.04) sepia(0.08) brightness(1.03);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .42 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.ph-img::after,
+.hb-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(
+      ellipse at 50% 45%,
+      transparent 55%,
+      rgba(28, 18, 6, 0.32) 100%
+    ),
+    var(--grain);
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+}
+.ph-img::after,
+.ph-img::before {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.ph-img:has(.store-photo[data-photo-ready])::after {
+  opacity: 0.85;
+}
+.ph-img:has(.store-photo[data-photo-ready])::before {
+  opacity: 1;
+}
+.ph-img::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 226, 180, 0.1),
+    rgba(255, 200, 140, 0.06)
+  );
+  mix-blend-mode: soft-light;
+}
+.ph-img {
+  position: absolute;
+}
+.rm .hb-roe {
+  transform: none;
+}
+
+.cc-media .ph-img,
+.bs-media .ph-img {
+  background-color: #e9e6e1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js:not(.rm) .ph-img > .store-photo {
+    transition:
+      opacity 240ms ease,
+      scale 2s var(--ease);
+  }
+  .js:not(.rm) .ph-img > .store-photo:not([data-photo-ready]) {
+    opacity: 0;
+  }
+}
+@supports (-webkit-touch-callout: none) {
+  .ph-img img {
+    filter: none;
+  }
+  .ph-img::before,
+  .ph-img::after {
+    display: none;
+  }
+  .js:not(.rm) .ph-img > .store-photo {
+    transition: none;
+  }
+}
+:root.safari-photo-safe .ph-img img {
+  filter: none;
+}
+:root.safari-photo-safe .ph-img::before,
+:root.safari-photo-safe .ph-img::after {
+  display: none;
+}
+:root.safari-photo-safe.js:not(.rm) .ph-img > .store-photo {
+  transition: none;
+}

@@ -1,0 +1,314 @@
+#catalog .pp:not(.on) {
+  display: none;
+}
+@media (max-width: 760px) {
+  .v-b :is(.collage, .sets-b, .blogb, .wv-media) {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    margin-inline: -16px;
+    padding: 0 16px 8px;
+    scroll-padding-inline: 16px;
+    scrollbar-width: none;
+  }
+  .v-b :is(.collage, .sets-b, .blogb, .wv-media)::-webkit-scrollbar {
+    display: none;
+  }
+  .js:not(.rm) .v-b :is(.collage, .sets-b, .blogb, .wv-media) > .b-rv {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .v-b :is(.collage, .sets-b, .blogb, .wv-media) > * {
+    flex: 0 0 84%;
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+}
+.pp {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 4.6fr) minmax(0, 6fr);
+  gap: 16px 32px;
+  padding: 16px;
+  align-items: start;
+  border-top: 1px dotted var(--b-dot);
+  scroll-margin-top: 48px;
+}
+.pp-th-ph {
+  padding: 0;
+}
+.pp-ptag {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 3;
+  padding: 6px 10px;
+  background: rgba(250, 249, 246, 0.9);
+  color: var(--b-ink);
+}
+.pp-photo img {
+  transition: opacity 0.35s;
+}
+.pp-photo {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  background: #fff;
+}
+.pp-sticky {
+  min-width: 0;
+}
+.pp-sticky > :first-child {
+  margin-top: -0.3em;
+}
+.pp-sticky .b-p {
+  max-width: 460px;
+}
+.b-accs {
+  width: 100%;
+  text-align: left;
+  margin-top: 6px;
+}
+.b-acc {
+  border-top: 0;
+  border-bottom: 1px dotted var(--b-dot);
+}
+.b-acc:first-child {
+  border-top: 1px dotted var(--b-dot);
+}
+.b-acc:last-child {
+  border-bottom: 1px dotted var(--b-dot);
+}
+.b-acc .acc-btn {
+  min-height: 54px;
+  padding: 12px 0;
+  font-family: var(--b-wide);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.b-acc .acc-inner > div {
+  padding: 0 0 18px;
+  font-size: 15px;
+  line-height: 1.42;
+}
+.b-acc dl {
+  display: grid;
+  gap: 10px;
+}
+.b-acc dt {
+  font-family: var(--b-wide);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--b-mute);
+}
+.pp-delivery,
+.pp-delivery > div {
+  display: grid;
+  gap: 12px;
+}
+.pp-delivery :is(p, ul) {
+  margin: 0;
+}
+.pp-size {
+  justify-self: stretch;
+  text-align: left;
+  margin-block: 6px 12px;
+}
+.b-packs {
+  display: grid;
+  grid-template-columns: repeat(min(var(--packs), 3), minmax(0, 1fr));
+  width: 100%;
+}
+.b-packs .pack {
+  border: 1px dotted var(--b-dot);
+  margin: 0 -1px -1px 0;
+  outline-offset: -1px;
+  min-height: 56px;
+  min-width: 0;
+  padding: 8px;
+  align-items: center;
+  font-family: var(--b-wide);
+  font-size: 13px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.b-packs .pack small {
+  font-family: var(--b-sans);
+  font-size: 13px;
+}
+.b-packs .pack:has(:checked) {
+  background: var(--b-ink);
+  color: var(--b-bg);
+}
+.b-packs .pack:has(:checked) small {
+  color: inherit;
+  opacity: 0.8;
+}
+.b-packs .pack[data-unavailable] :is(span, small) {
+  text-decoration: line-through;
+}
+.b-packs .pack[data-unavailable]:has(:checked) {
+  background: var(--b-mute);
+}
+.pp-latin-note {
+  max-width: 46ch;
+  font-size: 13px;
+  color: var(--b-mute);
+}
+@media (hover: hover) and (pointer: fine) {
+  .b-packs .pack:hover {
+    border-color: var(--ink);
+    z-index: 1;
+  }
+}
+.b-qty .qty {
+  border: 1px dotted var(--b-dot);
+}
+.b-qty button {
+  height: 50px;
+}
+#pmodal.pm-b-mode[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  padding: 0;
+  background: var(--b-bg);
+}
+#pmodal > .store-header {
+  position: relative;
+}
+#pmodal > .panel > .x {
+  z-index: 6;
+}
+#pmodal.pm-b-mode > .panel {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  background: var(--b-bg);
+  color: var(--b-ink);
+  font-family: var(--b-sans);
+  font-weight: 300;
+}
+#pmodal.pm-b-mode .pp {
+  border: 0;
+  padding-top: 24px;
+}
+#pmodal.pm-b-mode .pp-sticky,
+#pmodal.pm-b-mode .pp-thumbs {
+  top: 16px;
+}
+@media (max-width: 640px) {
+  .pp {
+    grid-template-columns: 1fr;
+  }
+}
+.pp-th {
+  transition: outline-color 0.3s;
+}
+.pp-th[aria-pressed="true"] {
+  outline-color: var(--b-ink);
+}
+@media (min-width: 641px) {
+  .pp-gal > :not(.on) {
+    display: none;
+  }
+  .pp-gal {
+    align-self: start;
+  }
+  .pp-photo:not(.pp-pack),
+  .pp-pack[data-ppp="premium"] {
+    aspect-ratio: var(--photo-ratio);
+    max-height: calc(100svh - 150px);
+  }
+}
+@media (max-width: 640px) {
+  .pp-gal::-webkit-scrollbar {
+    display: none;
+  }
+  .pp-gal > * {
+    flex: 0 0 86%;
+    scroll-snap-align: start;
+  }
+  .pp-photo:not(.pp-pack) .ph-img:not(.ph-food) {
+    top: -10%;
+    bottom: auto;
+    height: 120%;
+  }
+}
+.pp-pack .ph-img {
+  background: transparent;
+}
+.pp .ph-food {
+  background: var(--serving-background, #fdfdfd);
+}
+.pp[data-product="sterlet"] {
+  --serving-background: #f3f4f5;
+}
+.pp[data-product="hybrid"] {
+  --serving-background: #060607;
+}
+.pp[data-product="premium"] {
+  --serving-background: #0b0b0c;
+}
+.pp-pack .ph-img img,
+.pp .ph-food img {
+  object-fit: contain;
+  filter: none;
+}
+.pp-thumbs .ph-img img,
+.pp-thumbs .ph-food img {
+  object-fit: cover;
+}
+.pp-thumbs .ph-img {
+  background: transparent;
+}
+@media (min-width: 641px) {
+  .pp-photo .ph-food img {
+    object-fit: cover;
+  }
+}
+.pp-pack .ph-img::before,
+.pp-pack .ph-img::after,
+.pp .ph-food::before,
+.pp .ph-food::after {
+  display: none;
+}
+.pp-pack:not([data-ppp="premium"]) .ph-img img {
+  transform: none;
+  transition: opacity 0.35s;
+}
+.pp-pack[data-ppp="premium"] {
+  background: #0b0a08;
+}
+.pp-pack[data-ppp="premium"] .ph-img img {
+  object-fit: cover;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pp-pack .ph-img img {
+    transition: none;
+  }
+}
+.pp-buy .b-btn[aria-disabled="true"]:not([data-added]) {
+  pointer-events: none;
+}
+.pp-buy .b-btn[aria-disabled="true"]:not([data-added], [aria-busy="true"]) {
+  opacity: 0.4;
+}
+.pp-buy .b-btn[aria-busy="true"]:not([data-added]) {
+  background: transparent;
+  color: var(--b-ink);
+}
+.pp-buy .b-btn[data-added] {
+  background: var(--bg);
+  border-color: var(--b-gold-d);
+  color: var(--b-gold-d);
+  cursor: default;
+  line-height: 1.2;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}

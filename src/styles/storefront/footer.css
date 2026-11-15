@@ -1,0 +1,147 @@
+.fb {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #0b0b0b;
+  color: #f2f2f2;
+}
+.fb-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.fb-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.74),
+    rgba(0, 0, 0, 0.42) 45%,
+    rgba(0, 0, 0, 0.86)
+  );
+}
+.fb-h {
+  font-size: clamp(44px, 5.2vw, 84px);
+}
+.fb-emblem {
+  display: flex;
+  justify-content: flex-start;
+}
+.fb-emblem img {
+  width: clamp(110px, 9vw, 140px);
+  height: auto;
+}
+.fb-slogan2 {
+  margin-top: 16px;
+}
+.fb-addr {
+  font-size: 13px;
+  color: rgba(242, 242, 242, 0.6);
+}
+.fb-field input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--b-sans);
+  font-size: 16px;
+}
+.fb-field input::placeholder {
+  color: rgba(242, 242, 242, 0.6);
+}
+.fb-field input:focus {
+  outline: none;
+}
+.fb-field:focus-within {
+  box-shadow: 0 1px 0 currentColor;
+}
+.fb-field button {
+  width: 48px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.fb-msg {
+  min-height: 25px;
+}
+.fb-confirmed {
+  min-height: 48px;
+  border-bottom: 1px solid currentColor;
+  font-family: var(--b-sans);
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+.fb-confirmed svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+.fb-bottom {
+  margin-top: auto;
+  align-items: end;
+}
+.fb-about {
+  grid-column: 1/5;
+  color: rgba(242, 242, 242, 0.85);
+}
+.fb-col a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  text-decoration: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .fb-col a:hover {
+    text-decoration: underline;
+  }
+}
+@media (max-width: 640px) {
+  .fb-bottom {
+    row-gap: 8px;
+  }
+  .fb-head,
+  .fb-join,
+  .fb-about,
+  .fb-col:nth-of-type(n) {
+    grid-column: 1/-1;
+  }
+}
+.static .hdr {
+  position: absolute !important;
+}
+.static :is(.ls-media, .faqb-media, .pp-sticky, .pp-thumbs) {
+  position: relative !important;
+  top: 0 !important;
+}
+.static .hb {
+  height: var(--svh) !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+.static :is(.fb, .fb-in) {
+  min-height: var(--svh) !important;
+}
+.static .b-split {
+  min-height: calc(var(--svh) - var(--hdr-h-c, 62px)) !important;
+}
+@media (max-width: 640px) {
+  .static :is(.ls-media, .faqb-media) {
+    height: calc(var(--svh) * 0.34) !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

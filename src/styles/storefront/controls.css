@@ -1,0 +1,76 @@
+.plate {
+  background: var(--plate);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.plate .jar {
+  width: 58%;
+}
+.taste {
+  margin-top: 16px;
+  color: var(--ink-2);
+}
+.pack {
+  transition:
+    background 0.25s,
+    color 0.25s;
+}
+.pack small {
+  color: var(--muted);
+}
+.acc {
+  border-top: 1px solid var(--line);
+}
+.acc:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.acc-btn {
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+  padding: 14px 0;
+  font-size: inherit;
+}
+.acc-ico {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  position: relative;
+}
+.acc-ico::before,
+.acc-ico::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: currentColor;
+  transition: transform 0.4s var(--ease);
+}
+.acc-ico::after {
+  transform: rotate(90deg);
+}
+.acc.open .acc-ico::after {
+  transform: rotate(0);
+}
+.acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s var(--ease);
+}
+.acc.open .acc-panel {
+  grid-template-rows: 1fr;
+}
+.acc-inner {
+  overflow: hidden;
+}
+.acc-inner > div {
+  padding: 0 0 22px;
+}

@@ -1,0 +1,446 @@
+.directory {
+  container-type: inline-size;
+}
+
+.filters,
+.segments {
+  min-width: 0;
+  margin: 0;
+  border: 0;
+}
+
+.filters {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.search {
+  display: grid;
+  flex: 1 1 230px;
+  gap: 4px;
+}
+
+/* Reserve the search field's error line in adjacent columns. */
+.filters > :not(.search) {
+  margin-block-end: calc(0.72rem * 1.2 + 4px);
+}
+
+.search input[aria-invalid="true"] {
+  border-color: #b77269;
+}
+
+.search input {
+  width: 100%;
+  min-height: 42px;
+  padding: 7px 10px;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.segments {
+  padding: 0;
+}
+
+.search span,
+.segments legend {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.segments div,
+.actions,
+.badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.segments div {
+  gap: 0 12px;
+}
+
+.segments label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 42px;
+}
+
+.segments input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--accent-ink);
+}
+
+.actions button {
+  min-height: 42px;
+  padding: 6px 12px;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.actions .primary {
+  color: var(--card);
+  border-color: var(--accent-ink);
+  background: var(--accent-ink);
+}
+
+.actions button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.actions button:hover:enabled {
+  box-shadow: inset 0 0 0 1px var(--gold);
+}
+
+.status {
+  scroll-margin-top: 72px;
+  min-height: 32px;
+  padding: 7px 0 4px;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.results[aria-busy="true"] {
+  opacity: 0.75;
+}
+
+.error {
+  margin: 10px 0 0;
+  color: #842b27;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  text-align: start;
+  font-size: 0.8rem;
+}
+
+.table :is(th, td) {
+  padding: 10px 12px;
+  text-align: start;
+  vertical-align: top;
+  overflow-wrap: normal;
+}
+
+.table td:nth-child(2) {
+  min-width: 152px;
+  overflow-wrap: anywhere;
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3),
+.badge[data-segment] {
+  white-space: nowrap;
+}
+
+.table th {
+  color: var(--muted);
+  background: var(--surface);
+  font-weight: 600;
+}
+
+.table tbody tr + tr {
+  border-top: 1px solid var(--border);
+}
+
+.table tbody tr:focus-within,
+.table tbody tr:hover {
+  background: var(--paper);
+}
+
+.customerLink {
+  position: relative;
+  color: var(--accent-ink);
+  text-underline-offset: 0.2em;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.customerLink + .badges {
+  margin-top: 5px;
+}
+
+/* Same geometry as every other staff badge; only the palette differs below. */
+.badge {
+  composes: badge from "../status-badge.module.css";
+}
+
+/*
+ * Segment and source are categories, not statuses, so they keep distinguishable
+ * hues rather than the status scale. They are muted into the same warm weight so
+ * the table reads as one surface — the previous green/blue/purple were the only
+ * cold accents in the admin.
+ */
+.badge[data-segment="retail"] {
+  color: #5f6065;
+  background: #efece4;
+}
+
+.badge[data-segment="corporate"] {
+  color: #694f22;
+  background: #f6edda;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.empty {
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+/* The detail page sits outside the directory container, so it declares its own. */
+.recordStack {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  container-type: inline-size;
+}
+
+.history {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, max-content);
+  align-items: baseline;
+  gap: 4px 16px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+
+.history li:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.eventKind {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.eventKind strong {
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.eventKind span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.eventKind a {
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+/* Amount leads, timestamp recedes. */
+.eventMeta {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+}
+
+.eventMeta strong {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.history :is(small, time) {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+@container (width < 760px) {
+  .table {
+    min-width: 590px;
+  }
+
+  .table :is(th, td):nth-child(5) {
+    display: none;
+  }
+}
+
+@container (width < 560px) {
+  .table {
+    min-width: 420px;
+  }
+
+  .table :is(th, td):nth-child(2) {
+    display: none;
+  }
+}
+
+.badge[data-source="promotion"] {
+  color: #6d5330;
+  background: #f3ebdd;
+}
+
+.badge[data-source="corporate"] {
+  color: #704819;
+  background: #f8ebda;
+}
+
+.badge[data-source="restock"] {
+  color: #4a5a46;
+  background: #eceee6;
+}
+
+.badge[data-source="contact"] {
+  color: #585a63;
+  background: #eceef1;
+}
+
+.table tbody tr[data-without-orders] {
+  background: #f0efed;
+}
+
+.orderCount {
+  display: inline-grid;
+  min-width: 28px;
+  min-height: 26px;
+  place-items: center;
+  padding-inline: 6px;
+  color: #694d12;
+  border: 1px solid #d8bc72;
+  border-radius: 6px;
+  background: #fff1c9;
+  font-weight: 600;
+}
+
+.orderCount[data-tier="medium"] {
+  color: #145237;
+  border-color: #73a987;
+  background: #d5efdc;
+}
+
+.orderCount[data-tier="high"] {
+  color: #fff;
+  border-color: #176143;
+  background: #176143;
+}
+
+.interactionDate {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.interactionDate[data-status="recent"] {
+  color: #145237;
+  background: #d5efdc;
+}
+
+.interactionDate[data-status="stale"] {
+  color: #8a2928;
+  background: #f8e0de;
+}
+
+:global(h1) + .badges .badge {
+  padding: 4px 9px;
+  font-size: 0.85rem;
+}
+
+.orderDetails {
+  grid-column: 1 / -1;
+}
+
+.orderDetails summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--accent-ink);
+}
+
+.orderDetails dl {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 0;
+}
+
+.orderDetails dl > div {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.orderDetails dt {
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.orderDetails dd {
+  font-size: 0.88rem;
+}
+
+.orderDetails dd {
+  margin: 0;
+}
+
+.orderDetails time {
+  font-size: inherit;
+}
+
+.historyPages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.historyPages a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--accent-ink);
+}
+
+.historyPages a:hover {
+  background: var(--surface);
+}
+
+.retry {
+  padding: 6px 10px;
+  color: var(--accent-ink);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--card);
+}

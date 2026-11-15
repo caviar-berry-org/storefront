@@ -1,0 +1,62 @@
+{
+  "name": "caviar-berry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <27",
+    "npm": ">=11"
+  },
+  "packageManager": "npm@12.2.1",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "APP_ENV=development SITE_URL=http://127.0.0.1:3100 node --test tests/unit/*.test.ts",
+    "test:e2e": "playwright test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm test",
+    "verify": "npm run check && npm run build && npm run test:e2e",
+    "seed:dev:inquiries": "node scripts/seed-dev-inquiries.ts",
+    "seed:dev:customers": "node scripts/seed-dev-customers.ts",
+    "env:check": "node scripts/check-env.ts",
+    "media:build": "node scripts/build-editorial-media.ts",
+    "mail:verify": "node scripts/verify-dev-smtp.ts",
+    "mail:test": "node scripts/send-test-mail.ts",
+    "seed:dev:catalog": "node scripts/seed-dev-catalog.ts",
+    "providers:verify": "node scripts/verify-commerce-providers.ts",
+    "seed:dev:checkout-test": "node scripts/seed-checkout-test-product.ts",
+    "social:build": "node scripts/build-social-preview.ts",
+    "orders:lookup:backfill": "node scripts/backfill-order-lookup.ts",
+    "mail:logo": "node scripts/build-mail-logo.ts",
+    "mail:preview": "node scripts/preview-mail.ts",
+    "chart:preview": "node scripts/preview-channel-chart.ts",
+    "mail:share": "node scripts/preview-mail.ts --share",
+    "media:catalog": "node scripts/build-catalog-media.ts"
+  },
+  "dependencies": {
+    "firebase": "13.2.0",
+    "firebase-admin": "14.5.0",
+    "next": "16.4.5",
+    "nodemailer": "10.5.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@next/env": "16.4.5",
+    "@playwright/test": "1.65.0",
+    "@tailwindcss/postcss": "4.3.4",
+    "@types/node": "^24.0.0",
+    "@types/nodemailer": "8.0.2",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "16.4.5",
+    "prettier": "^3.9.0",
+    "tailwindcss": "4.3.4",
+    "typescript": "~5.9.3"
+  }
+}

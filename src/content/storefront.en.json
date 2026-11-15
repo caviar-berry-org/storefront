@@ -1,0 +1,90 @@
+{
+  "nature": "All our fish are raised in clean flowing water at farms in the Zakarpattia, Volyn and Chernivtsi regions of Ukraine. We collect sturgeon caviar using a method known as “milking” which allows the fish to remain alive after collection.",
+  "traceLead": "Fish origin, laboratory testing and production control. Behind every jar of our caviar is a clear path from the farm to your table.",
+  "steps": [
+    {
+      "cap": "Caviar Berry caviar jars with batch labels",
+      "n": "01",
+      "h": "Known origin and our own production",
+      "p": "We work with farms in the Zakarpattia, Volyn and Chernivtsi regions of Ukraine. For every batch we record the farm and fish species and keep the documents confirming its origin. We salt and pack the caviar at our own facility in the Vinnytsia region, registered by the State Service of Ukraine on Food Safety and Consumer Protection. The facility operates a certified HACCP food safety system. We monitor hygiene, temperature and production conditions at every stage."
+    },
+    {
+      "cap": "Technologist inspecting caviar at the facility",
+      "n": "02",
+      "h": "Laboratory testing of every batch",
+      "p": "Every batch is tested in an accredited laboratory of the State Service of Ukraine on Food Safety and Consumer Protection. Quality documents are issued in accordance with Ukrainian law."
+    },
+    {
+      "cap": "Caviar jars on ice, viewed from above",
+      "n": "03",
+      "h": "Transparent packaging",
+      "p": "A glass jar lets you see the size and colour of the caviar berries before opening. Vacuum packing helps preserve sturgeon caviar for up to 12 months in an unopened jar at −4 °C to −2 °C. Before dispatch we check that the jar is intact, sealed and labelled. We also protect it from damage during delivery."
+    },
+    {
+      "cap": "Caviar Berry trout roe jars: lid, open jar and label",
+      "n": "04",
+      "h": "All the key information is on the label",
+      "p": "On every jar we state the ingredients, production date, shelf life and storage conditions for that specific product."
+    },
+    {
+      "cap": "Sparkling wine bottles on ice",
+      "n": "05",
+      "h": "Keeping it cold during delivery",
+      "p": "We ship caviar in insulated boxes with ice packs. Once you receive it, put the jar in the fridge straight away and follow the storage instructions on the label."
+    }
+  ],
+  "sets": [
+    {
+      "name": "“Introduction”",
+      "price": "up to 3,000 UAH",
+      "cap": "Caviar Berry gift box beside a bouquet of red flowers",
+      "items": ["Sterlet caviar 50 g", "Trout caviar 100 g", "spoon", "card"],
+      "label": "Introduction",
+      "key": "Знайомство"
+    },
+    {
+      "name": "“Tasting”",
+      "price": "up to 6,000 UAH",
+      "cap": "Selection of caviar jars on a dark table",
+      "items": [
+        "Sterlet 50 g",
+        "Beluga Hybrid 50 g",
+        "premium 50 g",
+        "mother-of-pearl spoon",
+        "card"
+      ],
+      "label": "Tasting",
+      "key": "Дегустація"
+    },
+    {
+      "name": "“Premium”",
+      "price": "from 6,000 UAH",
+      "cap": "Caviar Berry gift box, caviar and glasses of sparkling wine",
+      "items": [
+        "premium 100 g",
+        "Beluga Hybrid 100 g",
+        "mother-of-pearl spoon",
+        "card"
+      ],
+      "label": "Premium",
+      "key": "Преміум"
+    }
+  ],
+  "posts": [
+    {
+      "t": "How to serve black caviar and preserve its taste",
+      "ph": "Serving: caviar server on ice, mother-of-pearl spoon",
+      "btn": ["Choose caviar", "#ikra"]
+    },
+    {
+      "t": "From our facility to your table: how we pack caviar",
+      "ph": "Glass jar in hand, thermal box",
+      "btn": ["Choose caviar", "#ikra"]
+    },
+    {
+      "t": "Sturgeon species",
+      "ph": "Sturgeon head close-up",
+      "btn": ["Choose caviar", "#ikra"]
+    }
+  ]
+}

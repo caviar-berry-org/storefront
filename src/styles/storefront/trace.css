@@ -1,0 +1,31 @@
+.tr-frame {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.7s var(--ease);
+}
+.tr-frame.on {
+  opacity: 1;
+}
+.tr-frame--contain .ph-img {
+  background: #fff;
+}
+.tr-frame--contain .ph-img img {
+  object-fit: contain;
+}
+.js:not(.rm) .b-img .tr-frame--contain img {
+  scale: 1;
+}
+.tr-acc .acc-btn {
+  min-height: 76px;
+  font-family: var(--b-cond);
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: 0.03em;
+}
+.tr-acc .acc-inner > div {
+  padding-left: 44px;
+}
+#trace-b {
+  scroll-margin-top: 48px;
+}

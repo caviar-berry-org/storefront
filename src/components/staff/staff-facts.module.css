@@ -1,0 +1,128 @@
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  gap: 12px 18px;
+  margin: 0;
+  min-width: 0;
+}
+
+.fact {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fact[data-wide] {
+  grid-column: 1 / -1;
+}
+
+.fact dt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.fact dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  /* Selection starts and ends inside the value, never on the label. */
+  user-select: text;
+}
+
+/* The one figure the record is about. */
+.fact dd[data-weight="lead"] {
+  font-size: 1.32rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Data staff act on: recipient, address, waybill. */
+.fact dd[data-weight="strong"] {
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+/* Service values: identifiers, timestamps, categories. */
+.fact dd[data-weight="dim"] {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.fact dd :is(span, a) {
+  display: block;
+}
+
+.copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 5px;
+  color: var(--accent-ink);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+}
+
+.copy svg {
+  width: 13px;
+  height: 13px;
+}
+
+.copy:hover,
+.copy:focus-visible {
+  border-color: var(--border);
+  background: var(--surface);
+}
+
+.copy[data-done] {
+  color: #4b6b3f;
+}
+
+@media (hover: hover) {
+  /* Out of the way until the value is being worked with. */
+  .copy {
+    opacity: 0;
+    transition: opacity 0.12s ease-out;
+  }
+
+  .fact:hover .copy,
+  .copy:focus-visible,
+  .copy[data-done] {
+    opacity: 1;
+  }
+}
+
+/* A standalone copy action keeps its label and never fades out. */
+.copyAction {
+  composes: copy;
+  padding: 6px 12px;
+  border-color: var(--border);
+  font-size: 0.85rem;
+}
+
+@media (hover: hover) {
+  .copyAction {
+    opacity: 1;
+  }
+}
+
+.copyAction svg {
+  width: 16px;
+  height: 16px;
+}

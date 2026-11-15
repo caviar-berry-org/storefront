@@ -1,0 +1,96 @@
+.blogb {
+  margin-top: clamp(28px, 3.5vw, 50px);
+}
+@media (min-width: 641px) and (max-width: 1023px) {
+  .blogb {
+    margin-top: clamp(32px, 4vw, 58px);
+  }
+}
+@media (max-width: 640px) {
+  .blogb {
+    margin-top: clamp(40px, 5vw, 72px);
+  }
+}
+/* The card is a real link for crawlability, so the browser underlines it and
+   that decoration propagates into every flex child: `no-underline` on the inner
+   label cannot cancel an ancestor's. It has to be removed here, at the source. */
+.blogb-item {
+  text-decoration: none;
+}
+.blogb-item .tile {
+  aspect-ratio: 1;
+}
+.blogb-item .tile {
+  width: 100%;
+}
+.blogb-item .tc-name {
+  font-size: 24px;
+  flex: 1;
+}
+.arch-b {
+  margin: clamp(56px, 7vw, 96px) 0 0;
+  display: grid;
+}
+.arch-b > .b-label {
+  text-align: left;
+  margin-bottom: 14px;
+}
+.arch-b .acc-btn {
+  min-height: 72px;
+}
+.arch-t {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 20px;
+  align-items: center;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.arch-t .yr {
+  font-family: var(--b-cond);
+  font-size: 34px;
+}
+.arch-body {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(20px, 3vw, 40px);
+  padding: 8px 0 32px;
+  align-items: start;
+}
+.arch-media {
+  position: relative;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+}
+.arch-media--wide {
+  aspect-ratio: 3543/1671;
+}
+.arch-media--video {
+  aspect-ratio: 16/9;
+}
+.arch-media > * {
+  height: 100%;
+}
+.arch-media video {
+  display: block;
+  width: 100%;
+  object-fit: contain;
+  background: #1a1a1a;
+}
+.arch-txt {
+  display: grid;
+  gap: 20px;
+  justify-items: start;
+}
+@media (max-width: 760px) {
+  .arch-body {
+    grid-template-columns: 1fr;
+  }
+  .arch-t {
+    grid-template-columns: 56px 1fr;
+    gap: 12px;
+  }
+  .arch-t .yr {
+    font-size: 26px;
+  }
+}

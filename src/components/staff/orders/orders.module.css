@@ -1,0 +1,396 @@
+.detailStack {
+  display: grid;
+  gap: 14px;
+  /* The detail page sits outside the directory container, so it declares its own. */
+  container-type: inline-size;
+}
+
+.table {
+  min-width: 480px;
+}
+
+.table tbody tr {
+  position: relative;
+  cursor: pointer;
+}
+
+.rowLink,
+.panel a {
+  color: var(--accent-ink);
+  font-weight: 600;
+  text-underline-offset: 0.2em;
+}
+
+.rowLink::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+}
+
+.table td:first-child > div {
+  margin-top: 5px;
+}
+
+.promo {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  font-weight: 600;
+  background: #eee5f6;
+  color: #583c73;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  overflow-wrap: anywhere;
+}
+
+.panel h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+/* Label column sizes to the widest label so values line up down the card. */
+.facts {
+  display: grid;
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 7px 14px;
+  margin: 0;
+}
+
+.facts dt {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.facts dd {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.muted {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* Cross-module jumps and copy actions never sit inside a definition list. */
+.jump,
+.jumps {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.jumps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.jump a,
+.jumps a {
+  color: var(--accent-ink);
+  font-weight: 600;
+  text-underline-offset: 0.2em;
+}
+
+/* A secondary line under a value: the method behind a payment status. */
+.subValue {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+.lines,
+.events {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Name and line total lead; pack, batch and expiry recede behind them. */
+.lines li {
+  align-items: baseline;
+}
+
+.lines li > strong {
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lines li > div > :is(a, strong) {
+  font-size: 0.96rem;
+  font-weight: 650;
+}
+
+.lines li > div > a {
+  color: var(--accent-ink);
+}
+
+.events li:first-child,
+.lines li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.lines li,
+.totals div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+}
+
+/*
+ * Every row is its own grid, so a `max-content` column made each row size its
+ * tracks from its own text: a long timestamp squeezed the `1fr` column and the
+ * actor drifted left and right down the list. Fixed tracks keep all four
+ * columns on one edge, and only the date is set against the right.
+ */
+.events li {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 11rem) minmax(0, 1fr)
+    minmax(0, 10rem) minmax(0, 9.5rem);
+  gap: 4px 16px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.88rem;
+}
+
+.events li > :last-child {
+  text-align: end;
+}
+
+.events li > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.events span,
+.events time {
+  color: var(--muted);
+}
+
+@container (max-width: 640px) {
+  .events li {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 9.5rem);
+  }
+}
+
+.totals {
+  max-width: 360px;
+  margin: 0 0 0 auto;
+}
+
+.totals dt,
+.totals dd {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.totals dt {
+  color: var(--muted);
+}
+
+/* The amount due is the figure the page exists for. */
+.totals div:last-child {
+  margin-top: 2px;
+  border-top-width: 2px;
+}
+
+.totals div:last-child :is(dt, dd) strong {
+  color: var(--ink);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.controls,
+.controls form {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.controls form {
+  flex: 1 1 260px;
+}
+
+@container (max-width: 850px) {
+  .table .hideMedium {
+    display: none;
+  }
+}
+
+@container (max-width: 550px) {
+  .table .hideSmall {
+    display: none;
+  }
+
+  .table {
+    min-width: 360px;
+  }
+}
+
+/* Saved status sits above the picker so a half-finished change is obvious. */
+.statusCurrent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.mailStates {
+  display: grid;
+  gap: 6px 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+}
+
+.mailStates div {
+  display: grid;
+  gap: 2px;
+}
+
+.mailStates dt {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.mailStates dd {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* The shipment email is opt-in, so the consequence sits under the label. */
+.notify {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 4px 10px;
+  padding: 10px 0 0;
+}
+
+.notify input {
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--accent-ink);
+}
+
+.notify span {
+  display: grid;
+  gap: 2px;
+  font-size: 0.9rem;
+}
+
+.notify small {
+  font-size: 0.78rem;
+}
+
+.notify:has(input:disabled) {
+  color: var(--muted);
+}
+
+/* Cancellation leaves manual work outside the admin; it must be visible. */
+.followUps {
+  margin: 0;
+  padding-inline-start: 20px;
+  font-size: 0.9rem;
+}
+
+.followUps li {
+  padding: 2px 0;
+}
+
+/*
+ * Row tint by where the order stands. Kept very pale on purpose: staff read
+ * these lists all day, so the colour has to register at a glance without
+ * competing with the badges that carry the precise status.
+ */
+.table tbody tr[data-life="done"] {
+  background: #f1f6ef;
+}
+
+.table tbody tr[data-life="cancelled"] {
+  background: #faf0ee;
+}
+
+.table tbody tr[data-life="open"] {
+  background: #fbf7ec;
+}
+
+.amount {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+/* Paid money reads green, money still owed reads amber — nothing else here. */
+.payMark {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: #8a6d1f;
+  background: #f6ecd2;
+}
+
+.payMark[data-paid="true"] {
+  color: #2f6b36;
+  background: #e2f0e0;
+}
+
+.payMark svg {
+  width: 12px;
+  height: 12px;
+}
+
+/*
+ * Confirming a transfer is the one control on this screen that moves money, and
+ * it sits beside Save, which is already the accent. Rather than a second accent
+ * competing with it, this takes the green the paid marks and the tally use — so
+ * the button that makes an order paid looks like paid.
+ */
+.confirmPayment {
+  border-color: #3f6f44;
+  background: #3f6f44;
+}
+
+.confirmPayment:hover:not(:disabled) {
+  border-color: #345b38;
+  background: #345b38;
+}

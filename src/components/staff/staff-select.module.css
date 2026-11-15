@@ -1,0 +1,37 @@
+.label {
+  display: grid;
+  gap: 4px;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.control {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-inline-size: 0;
+}
+
+.control select {
+  appearance: none;
+  inline-size: 100%;
+  min-block-size: 42px;
+  padding: 7px 36px 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.control svg {
+  position: absolute;
+  inset-inline-end: 12px;
+  inline-size: 16px;
+  block-size: 16px;
+  pointer-events: none;
+}

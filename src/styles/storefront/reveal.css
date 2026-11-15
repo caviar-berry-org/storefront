@@ -1,0 +1,83 @@
+.wm {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.l2 .wm,
+.b-quote .wm {
+  padding: 0.12em 0.2em 0.55em;
+  margin: -0.12em -0.2em -0.55em;
+}
+.js:not(.rm) [data-split]:not(.hb [data-split]) .w {
+  display: inline-block;
+  transition: transform 1.1s var(--ease);
+  transition-delay: calc(var(--i) * 55ms);
+}
+.js:not(.rm) [data-split]:not(.b-in, .hb [data-split]) .w {
+  transform: translateY(112%);
+}
+.js:not(.rm) .b-rv {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 1.2s var(--ease),
+    transform 1.2s var(--ease);
+}
+.js:not(.rm) .b-rv.b-in {
+  opacity: 1;
+  transform: none;
+}
+.js:not(.rm) :is(.b-img:not(.cc-media), .cc-media.b-img > a) {
+  clip-path: inset(var(--media-reveal-inset, 100%) 0 0 0);
+  transition: clip-path 1.5s var(--ease);
+}
+/*
+ * A catalogue card also waits for `data-ready` from `CardMedia`: the jar and the
+ * serving photograph have separate load paths, and revealing on scroll alone
+ * showed a finished jar beside a blank panel until the photograph caught up.
+ */
+.js:not(.rm)
+  :is(.b-img.b-in:not(.cc-media), .cc-media.b-img.b-in[data-ready] > a) {
+  clip-path: inset(0 0 0 0);
+}
+.js:not(.rm) .b-img img,
+.js:not(.rm) .b-img .jar {
+  scale: 1.14;
+  transition: scale 2s var(--ease);
+}
+.js:not(.rm) .b-img .jar {
+  transition:
+    scale 2s var(--ease),
+    transform 1.2s var(--ease);
+}
+.js:not(.rm) .b-img.b-in img,
+.js:not(.rm) .b-img.b-in .jar {
+  scale: 1;
+}
+@media (max-width: 640px) {
+  .bs-media {
+    --media-reveal-inset: 0%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js .hb-media {
+    position: absolute;
+    height: 100%;
+  }
+  .acc-panel,
+  .about-copy .acc-inner,
+  .acc-ico::after,
+  .lid,
+  .jar,
+  .arr {
+    transition: none !important;
+  }
+  .marq-track {
+    animation: none;
+  }
+}

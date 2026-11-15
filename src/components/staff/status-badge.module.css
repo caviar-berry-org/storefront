@@ -1,0 +1,61 @@
+/*
+ * One warm scale for every staff status, saturated where work is still owed
+ * and neutral once it is finished, so an unattended record reads at a glance.
+ * Problem states keep a terracotta of the same family: still warm, but not
+ * mistakable for "needs work".
+ */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--surface);
+  white-space: nowrap;
+}
+
+/* Unattended: the strongest accent in the scale. */
+.badge[data-tone="new"] {
+  background: #dcc07a;
+  color: #46310b;
+  font-weight: 700;
+}
+
+/* Picked up, not finished. */
+.badge[data-tone="active"] {
+  background: #ecdcb4;
+  color: #5c4414;
+  font-weight: 700;
+}
+
+/* Moving towards done; acknowledged, so a softer accent. */
+.badge[data-tone="transit"] {
+  background: #f2e8d2;
+  color: #6b5527;
+  font-weight: 600;
+}
+
+/* Finished: deliberately neutral, it needs no attention. */
+.badge[data-tone="done"] {
+  background: #efece4;
+  color: #5f6065;
+}
+
+.badge[data-tone="problem"] {
+  background: #eddcd2;
+  color: #8a4b2f;
+  font-weight: 700;
+}
+
+.badge[data-tone="closed"] {
+  background: #f1efea;
+  color: #8a8a8f;
+}
+
+@media (prefers-contrast: more) {
+  .badge {
+    outline: 1px solid currentColor;
+  }
+}

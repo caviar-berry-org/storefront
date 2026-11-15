@@ -1,0 +1,116 @@
+.b-p,
+.ls-item p,
+.cc-desc {
+  overflow-wrap: break-word;
+}
+@media (max-width: 1180px) {
+  .b-h2 .l2 {
+    margin-top: -0.2em;
+  }
+}
+@media (min-width: 641px) and (max-width: 1020px) {
+  .water-txt {
+    grid-column: 1/7;
+    padding-right: clamp(8px, 2vw, 24px);
+  }
+  .water-vars {
+    grid-column: 7/13;
+  }
+  .about-ls .ls-media.ls-bleed {
+    grid-column: 1/7;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+  }
+  .about-ls .ls-body {
+    grid-column: 7/13;
+    padding: 0 0 0 clamp(8px, 1.5vw, 24px);
+  }
+  .trace .ls-media.ls-bleed,
+  .faqb .faqb-media {
+    grid-column: 1/6;
+  }
+  .trace .ls-body,
+  .faqb-body {
+    grid-column: 6/13;
+    padding-right: 0;
+  }
+  .hist2-media {
+    grid-column: 1/6;
+  }
+  .hist2-txt {
+    grid-column: 6/13;
+  }
+}
+/* Covers every portrait tablet below the desktop navigation breakpoint: a
+   full-height media column renders as a narrow sliver that crops the subject. */
+@media (min-width: 641px) and (max-width: 1180px) and (orientation: portrait) {
+  .b-split,
+  .b-split .bs-media {
+    min-height: 0;
+  }
+  .static .b-split {
+    min-height: 0 !important;
+  }
+  .b-split .bs-media {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    align-self: start;
+  }
+  .b-split .bs-text {
+    padding-block: 40px;
+  }
+  .b-split-top .bs-text {
+    padding-block: 0;
+  }
+}
+@media (max-width: 640px) {
+  .product-page ~ .floating-contact {
+    display: none;
+  }
+  .pp-purchase {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 5;
+    background: var(--b-bg);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    max-height: 60svh;
+    overflow-y: auto;
+    border-top: 1px dotted var(--b-dot);
+  }
+  .pp {
+    padding-bottom: calc(var(--purchase-height, 180px) + 24px);
+  }
+  #pmodal.pm-b-mode .pp {
+    padding-top: 12px;
+  }
+}
+@media (max-width: 640px) {
+  .b-h2-mid {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .b-h2:has(.l2),
+  .b-h2.b-center {
+    text-align: left;
+  }
+  .b-lead-c.b-lead-mid {
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left;
+  }
+  .b-quote {
+    text-align: left;
+  }
+  .notify .b-link {
+    text-align: left;
+    justify-content: space-between;
+  }
+}
+@media (max-width: 640px) {
+  .lsplit > .ls-media {
+    min-width: 0;
+    max-width: 100%;
+    width: auto !important;
+  }
+}
