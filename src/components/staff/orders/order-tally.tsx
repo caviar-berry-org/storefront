@@ -25,8 +25,8 @@ export async function OrderTally() {
     [copy.tally.total, counts.total, undefined],
     [copy.tally.new, counts.new, "new"],
     [copy.tally.open, counts.open, "open"],
-    [copy.tally.received, counts.received, "done"],
-    [copy.tally.cancelled, counts.cancelled, "problem"],
+    [copy.tally.received, counts.done, "done"],
+    [copy.tally.problem, counts.problem, "problem"],
   ] as const;
   return (
     <section aria-label={copy.tally.label}>

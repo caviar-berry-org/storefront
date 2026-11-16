@@ -13,6 +13,7 @@ import {
   type OrderPage,
   type OrderSummary,
 } from "@/domain/orders";
+import { groupOrderCounts } from "@/domain/order-metrics";
 import { orderFailure } from "./feedback";
 import { orderCollection, orderData } from "./storage";
 
@@ -53,24 +54,25 @@ export const readOrderCounts = unstable_cache(
       const orders = orderCollection();
       const of = (status: string) =>
         orders.where("status", "==", status).count().get();
-      const [all, fresh, done, cancelled] = await Promise.all([
+      const [all, fresh, done, cancelled, disputed] = await Promise.all([
         orders.count().get(),
         of("new"),
         of("received"),
         of("cancelled"),
+        of("dispute"),
       ]);
       const total = all.data().count;
-      const neu = fresh.data().count;
-      const received = done.data().count;
-      const dropped = cancelled.data().count;
+      // Grouped in the domain, so this strip and the dashboard chart divide
+      // the order book the same way. `open` is still counted by subtraction:
+      // a status added later lands there rather than vanishing from the tally.
       return {
         total,
-        new: neu,
-        // Everything still moving: counted by subtraction so a status added
-        // later lands here rather than silently vanishing from the tally.
-        open: Math.max(0, total - neu - received - dropped),
-        received,
-        cancelled: dropped,
+        ...groupOrderCounts(total, {
+          new: fresh.data().count,
+          received: done.data().count,
+          cancelled: cancelled.data().count,
+          dispute: disputed.data().count,
+        }),
         at: Date.now(),
       };
     } catch (error) {

@@ -18,53 +18,79 @@ export async function DashboardMetrics() {
   const includeInventory = Boolean(await catalogStaff());
   const { orders, discounts, inventory, at } =
     await readDashboardMetrics(includeInventory);
-  const destinations = [
-    "/admin/orders",
-    "/admin/orders",
-    "/admin/products/inventory",
-    "/admin/orders",
-    "/admin/products/inventory",
-    "/admin/products/inventory",
-  ];
+  // Derived, not queried: the completed-orders aggregation already returns
+  // both the count and the sum, so the average cheque costs nothing.
+  const average = orders
+    ? orders.count
+      ? Math.round(orders.total / orders.count)
+      : 0
+    : undefined;
+  const orderBook = "/admin/orders";
+  const stock = "/admin/products/inventory";
+  // Money over the whole order book first, live stock after it. Each tile
+  // carries its own destination so reordering them cannot mislink one.
   const metrics = [
-    [copy.metrics.completed, orders?.count, false],
-    [copy.metrics.total, orders?.total, true],
-    [copy.metrics.expiring, inventory?.expiring, false],
-    [copy.metrics.discount, discounts?.discount, true],
-    [copy.metrics.expired, inventory?.expired, false],
-    [copy.metrics.low, inventory?.low, false],
+    {
+      metric: copy.metrics.completed,
+      value: orders?.count,
+      href: orderBook,
+      money: false,
+    },
+    {
+      metric: copy.metrics.average,
+      value: average,
+      href: orderBook,
+      money: true,
+    },
+    {
+      metric: copy.metrics.total,
+      value: orders?.total,
+      href: orderBook,
+      money: true,
+    },
+    {
+      metric: copy.metrics.discount,
+      value: discounts?.discount,
+      href: orderBook,
+      money: true,
+    },
+    {
+      metric: copy.metrics.expiring,
+      value: inventory?.expiring,
+      href: stock,
+      money: false,
+    },
+    {
+      metric: copy.metrics.low,
+      value: inventory?.low,
+      href: stock,
+      money: false,
+    },
   ] as const;
+  const restricted = new Set<string>([
+    copy.metrics.expiring.title,
+    copy.metrics.low.title,
+  ]);
   return (
     <section aria-label={copy.metricsLabel}>
       <div className={styles.grid}>
-        {metrics.map(([metric, value, currency], index) => (
+        {metrics.map(({ metric, value, href, money }) => (
           <article className={styles.metric} key={metric.title}>
             <header>
               <h2>
-                <AdminLink href={destinations[index]!}>
-                  {metric.title}
-                </AdminLink>
+                <AdminLink href={href}>{metric.title}</AdminLink>
               </h2>
               <StaffHelp
                 label={metric.title}
                 text={
-                  !includeInventory &&
-                  [
-                    copy.metrics.expiring.title,
-                    copy.metrics.expired.title,
-                    copy.metrics.low.title,
-                  ].some((title) => title === metric.title)
+                  !includeInventory && restricted.has(metric.title)
                     ? copy.inventoryRestricted
                     : metric.help
                 }
                 compact
               />
             </header>
-            <MetricValue
-              name={metric.title}
-              value={value}
-              currency={currency}
-            />
+            <MetricValue name={metric.title} value={value} currency={money} />
           </article>
         ))}
       </div>

@@ -61,7 +61,16 @@ export function MetricValue({
   const final = format(value, currency);
   const display = animated?.target === value ? animated.value : value;
   return (
-    <p className={styles.value} aria-label={final} title={final}>
+    // The tile scales its type with its own width, which says nothing about
+    // how many digits have to fit in it. A figure that has outgrown the
+    // default steps down rather than wrapping across two lines, where a
+    // thousands separator would read as the end of the number.
+    <p
+      className={styles.value}
+      data-size={final.length > 11 ? "s" : final.length > 8 ? "m" : undefined}
+      aria-label={final}
+      title={final}
+    >
       <span aria-hidden="true">{format(display, currency)}</span>
     </p>
   );
