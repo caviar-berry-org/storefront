@@ -62,10 +62,16 @@
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .hb-media {
-    animation: 1.8s var(--ease) both var(--hero-intro-state, running);
-    animation-name: var(--hero-fade, none);
-  }
+  /*
+   * The hero photograph deliberately carries no intro animation. It did, and
+   * `animation-fill-mode: both` on a paused animation held it at opacity 0 until
+   * the splash released the intro — which made the largest element on the page
+   * invisible to LCP for as long as the reveal took. Measured on mobile: 5.4s
+   * LCP against 1.6s FCP, and the same page with the intro disabled scored 100.
+   * Visitors with reduced motion already saw the photo without a fade, so this
+   * is the state they were getting; the words, links and emblem below keep
+   * theirs. Do not reintroduce an opacity animation here.
+   */
   .hb .wm > .w {
     display: inline-block;
     animation: 1.1s var(--ease)
