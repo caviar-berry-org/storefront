@@ -43,6 +43,18 @@
   overflow-wrap: anywhere;
 }
 
+/* Steps for a figure too long for the default: sums in the hundreds of
+   thousands, and the day a count reaches six digits. The exact value is on
+   the element's title and label either way. */
+.value[data-size="m"] {
+  font-size: clamp(0.95rem, 13cqi, 1.7rem);
+}
+
+.value[data-size="s"] {
+  font-size: clamp(0.85rem, 10cqi, 1.35rem);
+  letter-spacing: -0.01em;
+}
+
 .timestamp {
   margin: 8px 0 0;
   color: var(--muted);

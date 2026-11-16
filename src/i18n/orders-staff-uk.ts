@@ -43,7 +43,7 @@ export const ordersCopy = {
     new: "Нові",
     open: "В роботі",
     received: "Отримано",
-    cancelled: "Скасовано",
+    problem: "Скасовані/спір",
   },
   paid: "Оплачено",
   awaitingPayment: "Очікує оплати",
@@ -99,14 +99,6 @@ export const ordersCopy = {
   methods: { online: "Карткою онлайн", iban: "Переказ за реквізитами" },
   paymentStates: {
     pending: "Очікує підтвердження",
-    tally: {
-      label: "Підсумок за замовленнями",
-      total: "Усього",
-      new: "Нові",
-      open: "В роботі",
-      received: "Отримано",
-      cancelled: "Скасовано",
-    },
     paid: "Оплачено",
     failed: "Не пройшла",
     refunded: "Кошти повернуто",

@@ -436,6 +436,11 @@
   gap: 14px;
 }
 
+/* The order trend owns the full width of the section above the report grid. */
+.trendRow {
+  margin-block: 14px;
+}
+
 .queueGrid {
   margin-bottom: 18px;
 }

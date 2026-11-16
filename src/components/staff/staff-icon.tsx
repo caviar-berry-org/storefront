@@ -43,6 +43,7 @@ const paths = {
     "M14 4h6v6m0-6-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5",
   money:
     "M3 6h18v12H3zM12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M6 9h.01M18 15h.01",
+  eye: "M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12ZM15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0",
 } as const;
 
 export type StaffIconName = keyof typeof paths;

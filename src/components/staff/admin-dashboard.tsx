@@ -6,16 +6,25 @@ import { StaffHeading } from "./staff-heading";
 import styles from "./staff.module.css";
 
 const copy = staffCopy.dashboard;
+/**
+ * Orders and new orders are no longer placeholders — the trend chart above
+ * carries both, over a time axis these cards never had. What is left is the
+ * traffic reporting still to be built.
+ */
 const reports = [
-  { title: copy.orders, icon: "overview" },
-  { title: copy.newOrders, icon: "orders" },
   { title: copy.visits, icon: "visits" },
   { title: copy.campaigns, icon: "utm" },
   { title: copy.regions, icon: "regions" },
   { title: copy.countries, icon: "countries" },
 ] as const;
 
-export function AdminDashboard({ metrics }: { metrics: ReactNode }) {
+export function AdminDashboard({
+  metrics,
+  trend,
+}: {
+  metrics: ReactNode;
+  trend: ReactNode;
+}) {
   return (
     <>
       <StaffHeading
@@ -23,6 +32,7 @@ export function AdminDashboard({ metrics }: { metrics: ReactNode }) {
         tools={<StaffHelp label={copy.help} text={copy.helpText} />}
       />
       {metrics}
+      <div className={styles.trendRow}>{trend}</div>
       <div className={styles.reportGrid}>
         {reports.map((report) => (
           <ReportCard key={report.icon} {...report} />
