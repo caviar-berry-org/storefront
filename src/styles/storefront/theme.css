@@ -11,7 +11,8 @@
   --b-sans: "Montserrat", system-ui, sans-serif;
   --b-cond: "EB Garamond", Georgia, serif;
   --b-gold: #a8834a;
-  --b-gold-d: #8a6a36;
+  /* 4.62:1 on the #f2f2f2 section ground; #8a6a36 measured 4.47 and failed AA. */
+  --b-gold-d: #876835;
   --b-gold-l: #cdaa6e;
   --b-wide: "Unbounded", system-ui, sans-serif;
   --b-script: "UCB Script", "Marck Script", cursive;

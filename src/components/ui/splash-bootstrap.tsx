@@ -61,12 +61,35 @@ const bootstrap = `
       revealHero();
     }, 280);
   }
+  // The splash hides an unfinished first paint, and what it has to hide is the
+  // web fonts and the hero photo - not the rest of the bundle. Waiting only for
+  // the load event tied the reveal to every chunk on the page: on a throttled
+  // phone the hero sat at opacity 0 (.hb-media keeps the paused intro's "both"
+  // fill) long after the image had arrived, and that wait is what LCP measures.
+  function painted() {
+    const hero = new Promise((resolve) => {
+      // The splash is the first node in <body>, so the hero is not parsed yet.
+      const start = () => {
+        const img = document.querySelector(".hb-roe");
+        if (!img || (img.complete && img.naturalWidth)) return resolve();
+        img.addEventListener("load", resolve, { once: true });
+        img.addEventListener("error", resolve, { once: true });
+      };
+      if (document.readyState === "loading")
+        document.addEventListener("DOMContentLoaded", start, { once: true });
+      else start();
+    });
+    return Promise.all([document.fonts?.ready, hero]);
+  }
   function ready() {
     setTimeout(dismiss, Math.max(0, (showSplash ? 350 : 150) - (performance.now() - started)));
   }
   if (showSplash) document.addEventListener("focusin", dismiss, { once: true });
   if (document.readyState === "complete") ready();
-  else window.addEventListener("load", ready, { once: true });
+  else {
+    window.addEventListener("load", ready, { once: true });
+    painted().then(ready, ready);
+  }
 })();
 `;
 
