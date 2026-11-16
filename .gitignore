@@ -23,3 +23,6 @@ firestore-debug.log*
 .claude/
 AGENTS.md
 CLAUDE.md
+
+# Operating notes live on the maintainer's machine, not in a public tree.
+docs/

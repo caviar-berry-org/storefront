@@ -58,7 +58,7 @@ src/
   components/
     sections/          home-page blocks
     store/             storefront behaviour (cart, checkout, overlays)
-    staff/             admin primitives (see "Admin UI conventions" in docs/engineering-conventions.md)
+    staff/             admin primitives (StatusBadge, StaffConfirm, StaffFacts, …)
     ui/ seo/           shared presentation, structured data
   content/             editable content: products, journal, legal offer, mail templates, contacts
   i18n/                ua/en storefront dictionaries, Ukrainian staff copy
@@ -108,8 +108,9 @@ functions, which is why most of the test suite needs no database.
 
 ## Further reading
 
-Conventions this codebase depends on — commerce invariants, admin UI rules, media delivery,
-Safari deviations, infrastructure budget: `docs/engineering-conventions.md`.
-Operations, release checklist, audits and the SEO plan: `docs/`.
-What is deliberately deferred past launch, and why: `docs/post-release.md`.
 Mail triggers and templates: `src/content/mail/README.md`.
+
+Operating notes — the release checklist, the hosting and mail setup, the commerce
+audit and what is deliberately deferred past launch — are kept outside this
+repository and handed over separately. They describe infrastructure rather than
+code, so they do not belong in a public tree.

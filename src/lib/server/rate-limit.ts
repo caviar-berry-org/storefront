@@ -10,7 +10,7 @@ import "server-only";
  *
  * It is a speed bump, not a wall: it resets on a cold start and each serverless
  * instance counts separately, so a distributed flood still gets through. The
- * authoritative limit belongs at the edge — see `docs/release-checklist.md`.
+ * authoritative limit belongs at the edge.
  * What it does buy is that one script hammering one endpoint stops paying for
  * order transactions and Nova Poshta calls after its first few requests.
  */
