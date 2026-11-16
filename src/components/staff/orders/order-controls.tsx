@@ -6,6 +6,7 @@ import { updateOrder } from "@/app/(staff)/admin/orders/actions";
 import {
   availableOrderStatuses,
   canConfirmTransfer,
+  cancellationLeavesStockHeld,
   isOrderStatus,
   type Order,
   type OrderChange,
@@ -30,9 +31,16 @@ export function OrderControls({
   status,
   payment,
   delivery,
+  inventoryState,
 }: Pick<
   Order,
-  "id" | "type" | "revision" | "status" | "payment" | "delivery"
+  | "id"
+  | "type"
+  | "revision"
+  | "status"
+  | "payment"
+  | "delivery"
+  | "inventoryState"
 >) {
   const [error, setError] = useState<OrderError | null>(null);
   const [pending, startTransition] = useTransition();
@@ -42,6 +50,8 @@ export function OrderControls({
   const router = useRouter();
   const options = availableOrderStatuses({ type, status, payment, delivery });
   const confirmable = canConfirmTransfer({ type, status, payment, delivery });
+  // Stated before the action, not after: a paid order keeps its stock.
+  const stockHeld = cancellationLeavesStockHeld({ payment, inventoryState });
 
   function save(change: OrderChange) {
     if (lock.current) return;
@@ -153,6 +163,9 @@ export function OrderControls({
         }
         body={
           asking === "cancel" ? copy.cancelConfirmBody : copy.confirmPaymentText
+        }
+        notice={
+          asking === "cancel" && stockHeld ? copy.cancelConfirmHeld : undefined
         }
         confirmLabel={
           asking === "cancel" ? copy.cancelConfirmSave : copy.confirmPayment

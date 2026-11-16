@@ -1,7 +1,11 @@
 import "server-only";
 import { FieldValue } from "firebase-admin/firestore";
 import type { OrderError, OrderEvent } from "@/domain/orders";
-import { availableOrderStatuses } from "@/domain/orders";
+import {
+  availableOrderStatuses,
+  cancellationLeavesStockHeld,
+  cancellationReleasesStock,
+} from "@/domain/orders";
 import type { CatalogRecord } from "@/domain/managed-catalog";
 import { releaseStock } from "@/domain/checkout-stock";
 import { catalogCollections } from "@/lib/catalog-collections";
@@ -39,12 +43,7 @@ export async function cancelOrder(
     const order = orderData(await tx.get(ref));
     if (!order || !availableOrderStatuses(order).includes("cancelled"))
       return { error: "conflict" };
-    const unpaid =
-      order.payment.status !== "paid" && order.payment.status !== "refunded";
-    const restore =
-      unpaid &&
-      (order.inventoryState === "reserved" ||
-        order.inventoryState === "consumed");
+    const restore = cancellationReleasesStock(order);
     const ids = [...new Set(order.lines.map((line) => line.productId))];
     const records = restore
       ? (
@@ -109,6 +108,7 @@ export async function cancelOrder(
         actor: actor.uid,
         refundRequired: order.payment.status === "paid",
         trackingRemovalRequired: Boolean(order.delivery?.trackingNumber),
+        stockReturnRequired: cancellationLeavesStockHeld(order),
       },
     });
     tx.create(ref.collection("activity").doc(), {

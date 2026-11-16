@@ -443,6 +443,50 @@ test("offline cancellation restores the exact stock batches and keeps its consum
     order.id,
   );
 });
+test("cancelling a paid order keeps the stock consumed and asks staff to return it", async () => {
+  const f = fixture();
+  const order = await f.creation.createOrder(f.input, randomUUID(), "test");
+  await f.payment.ensureInvoice(order);
+  const paid = await f.payment.applyPayment(success(order));
+  assert.equal(paid.payment.status, "paid");
+  assert.equal(paid.inventoryState, "consumed");
+  const path = `orderBooks/development/orders/${order.id}`;
+  const stored = f.rows.get(path)!;
+  f.rows.set(path, { ...stored, status: "processing" });
+  const sold = structuredClone(
+    (
+      f.rows.get(
+        `${catalogCollections.caviar.records}/premium`,
+      )! as unknown as typeof f.record
+    ).data.stock[f.pack.id],
+  );
+  const { cancelOrder } = serverModule<
+    typeof import("../../src/lib/server/orders/cancel.ts")
+  >("src/lib/server/orders/cancel.ts", {
+    [resolve("src/lib/server/firestore.ts")]: {
+      firebaseAdminDatabase: () => f.db,
+    },
+  });
+  const result = await cancelOrder(order.id, stored.revision as number, {
+    uid: "test-staff",
+  });
+  assert.ok("changed" in result && result.changed);
+  const cancelled = f.rows.get(path)!;
+  // The money arrived, so the jar may already be gone: cancelling must not
+  // invent stock back. The admin says so before it runs and lists it after.
+  assert.deepEqual(
+    (
+      f.rows.get(
+        `${catalogCollections.caviar.records}/premium`,
+      )! as unknown as typeof f.record
+    ).data.stock[f.pack.id],
+    sold,
+  );
+  assert.equal(cancelled.inventoryState, "consumed");
+  const cancellation = cancelled.cancellation as Order["cancellation"];
+  assert.equal(cancellation?.refundRequired, true);
+  assert.equal(cancellation?.stockReturnRequired, true);
+});
 test("manual TTN is free-form, never gates fulfilment and mails only on request", async () => {
   const f = fixture();
   const order = await f.creation.createOrder(f.input, randomUUID(), "test");
