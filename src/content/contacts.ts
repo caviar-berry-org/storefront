@@ -14,7 +14,7 @@ export const contacts = {
   email: "sale@caviar.net.ua",
   phones: [
     { tel: "+380981944248", display: "+38 098 194 4248" },
-    { tel: "+380672383067", display: "+38 067 238 3067" },
+    { tel: "+380677772638", display: "+38 067 777 2638" },
   ],
   social: {
     instagram: "https://www.instagram.com/caviar.berry/",
