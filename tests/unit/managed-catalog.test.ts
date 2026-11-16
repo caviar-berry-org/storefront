@@ -5,6 +5,7 @@ import {
   changeQuantity,
   restoreCart,
 } from "../../src/domain/cart.ts";
+import { formatCaviarLatin } from "../../src/domain/catalog.ts";
 import {
   giftView,
   parseMinor,
@@ -146,4 +147,18 @@ test("premium notes follow the premium flag and zero stock prevents purchase in 
     assert.equal(productView(data, locale, "2026-11-12").latinNote, "Note");
     data.premium = false;
   }
+});
+
+test("latin species name reaches the storefront exactly as staff entered it", () => {
+  for (const value of [
+    "Oncorhynchus mykiss",
+    "A.RUTHENUS",
+    "HUSO HUSOxA.RUTHENUS",
+    "A.BAERII/A.GUELDENSTAEDTII/HUSO HUSOxA.RUTHENUS",
+  ]) {
+    assert.equal(formatCaviarLatin(value), value);
+    assert.equal(formatCaviarLatin(`  ${value}  `), value);
+  }
+  // An empty field renders nothing; no product may fall back to a hardcoded species.
+  assert.equal(formatCaviarLatin(""), "");
 });

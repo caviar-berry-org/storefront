@@ -55,7 +55,7 @@ export function ProductCard({
 }) {
   const t = getTranslator(locale);
   const detailsLabel = t("catalog.text6", { value1: product.name });
-  const latin = formatCaviarLatin(product.latin, product.id);
+  const latin = formatCaviarLatin(product.latin);
   const species = latin ? latin.split("/") : [];
   const first = product.variants.find(isVariantAvailable);
   const available = first !== undefined;
@@ -141,7 +141,7 @@ export function ProductCard({
           )}
         </p>
         <p
-          className={`tc-lat [overflow-wrap:anywhere] text-[14px] [color:var(--b-mute)]`}
+          className={`tc-lat [overflow-wrap:anywhere] uppercase text-[14px] [color:var(--b-mute)]`}
         >
           {species.length
             ? species.map((name, index) => {
