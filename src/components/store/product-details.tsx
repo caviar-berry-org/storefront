@@ -69,7 +69,7 @@ export function ProductDetails({ product: initial }: { product: Product }) {
   const checking = checkingAdd;
   const added = addedUntil !== null;
   const addError = lastAddError;
-  const latin = formatCaviarLatin(product.latin, product.id);
+  const latin = formatCaviarLatin(product.latin);
   const firstAvailable = product.variants.findIndex(isVariantAvailable);
   const variant = product.variants[index]!;
   const limit = quantityLimit(variant);
@@ -129,10 +129,7 @@ export function ProductDetails({ product: initial }: { product: Product }) {
           className={`pp-sticky sticky top-[64px] grid gap-[18px] [justify-items:start] text-left p-[0_clamp(8px,_4vw,_64px)_32px] max-[640px]:relative max-[640px]:top-0 max-[640px]:p-[24px_0] min-[641px]:pr-[clamp(8px,_3vw,_48px)]`}
         >
           {latin && (
-            <p
-              className={`b-label ${ui.bLabel} [overflow-wrap:anywhere]`}
-              style={{ textTransform: "none" }}
-            >
+            <p className={`b-label ${ui.bLabel} [overflow-wrap:anywhere]`}>
               {latin}
               {premiumNote && "*"}
             </p>

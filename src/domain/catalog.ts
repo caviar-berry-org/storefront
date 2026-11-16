@@ -43,22 +43,10 @@ export interface Product {
   variants: Variant[];
 }
 
-export function formatCaviarLatin(value: string, productId?: string) {
-  const latin = value
-    .trim()
-    .replace(/^UA(?:\s*[·:–—-]\s*|\s+)/i, "")
-    .replace(/\s*\*+$/, "")
-    .split(/\s*×\s*|\s+[xX]\s+|(?<=[A-Za-z])x(?=[A-Z])/)
-    .map((part) =>
-      part
-        .toUpperCase()
-        .replace(/\bACIPENSER\s+/g, "A.")
-        .replace(/\bONCORHYNCHUS\s+/g, "O."),
-    )
-    .join("x")
-    .replace(/\.\s+/g, ".")
-    .replace(/\s*[/·;,]\s*/g, "/");
-  return latin || (productId === "trout" ? "SALMO TRUTTA" : "");
+// Staff own this string: it is rendered exactly as entered. The uppercase
+// look belongs to the label styles, so JSON-LD keeps the canonical spelling.
+export function formatCaviarLatin(value: string) {
+  return value.trim();
 }
 
 export function findVariant(products: readonly Product[], variantId: string) {
