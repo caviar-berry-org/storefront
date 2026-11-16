@@ -85,6 +85,8 @@ export type Order = OrderSummary & {
     actor: string;
     refundRequired: boolean;
     trackingRemovalRequired: boolean;
+    /** Cancelling kept the stock allocated; staff restore the batch by hand. */
+    stockReturnRequired?: boolean;
   };
   lines: OrderLine[];
   subtotalMinor: number;
@@ -217,6 +219,33 @@ export type TrackingResult = {
 /** A Nova Poshta express waybill. Only these can be checked against the carrier. */
 export const isCarrierTrackingNumber = (value: string) =>
   /^\d{14}$/.test(value.replace(/[\s-]/g, ""));
+
+/**
+ * Cancelling gives stock back only while the money has not arrived. Once an
+ * order is paid the jar may already be on its way, so the inventory decision
+ * becomes a human one — the same rule the admin states before it cancels, which
+ * is why both sides read it from here instead of restating it.
+ */
+export function cancellationReleasesStock(
+  order: Pick<Order, "payment" | "inventoryState">,
+) {
+  const unpaid =
+    order.payment.status !== "paid" && order.payment.status !== "refunded";
+  return (
+    unpaid &&
+    (order.inventoryState === "reserved" || order.inventoryState === "consumed")
+  );
+}
+
+/** The order holds stock that cancelling will not return on its own. */
+export function cancellationLeavesStockHeld(
+  order: Pick<Order, "payment" | "inventoryState">,
+) {
+  return (
+    !cancellationReleasesStock(order) &&
+    (order.inventoryState === "reserved" || order.inventoryState === "consumed")
+  );
+}
 
 export const isOrderStatus = (value: unknown): value is OrderStatus =>
   orderStatuses.some((status) => status === value);

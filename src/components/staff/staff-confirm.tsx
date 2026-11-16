@@ -15,6 +15,7 @@ export function StaffConfirm({
   title,
   body,
   confirmLabel,
+  notice,
   danger = false,
   busy = false,
   error,
@@ -25,6 +26,8 @@ export function StaffConfirm({
   title: string;
   body: ReactNode;
   confirmLabel: string;
+  /** A consequence that outlives the action and needs more weight than the body. */
+  notice?: string;
   danger?: boolean;
   busy?: boolean;
   error?: {
@@ -62,6 +65,7 @@ export function StaffConfirm({
     >
       <h2 id={id}>{title}</h2>
       <p id={`${id}-body`}>{body}</p>
+      {notice && <StaffNotice message={notice} />}
       {error && (
         <StaffNotice
           message={error.message}

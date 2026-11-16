@@ -152,9 +152,12 @@ export const ordersCopy = {
   cancelledAt: "Скасовано",
   refundRequired: "Повернути оплату в банкінгу",
   trackingRemovalRequired: "Скасувати накладну в кабінеті Нової пошти",
+  stockReturnRequired: "Повернути партію на склад вручну",
   cancelConfirmTitle: "Скасувати замовлення?",
   cancelConfirmBody:
     "Статус зміниться на «Скасовано» без можливості повернути його. Резерв складу звільняється, а повернення коштів і скасування накладної робляться вручну — адмінка покаже перелік цих дій.",
+  cancelConfirmHeld:
+    "Товар залишиться списаним зі складу — поверніть партію вручну після повернення коштів.",
   cancelConfirmSave: "Так, скасувати",
   notifyConfirmTitle: "Клієнт отримає лист",
   notifyConfirmBody:

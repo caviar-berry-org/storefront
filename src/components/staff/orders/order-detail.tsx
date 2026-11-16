@@ -66,16 +66,21 @@ export function OrderDetail({
             status={order.status}
             payment={payment}
             delivery={delivery}
+            inventoryState={order.inventoryState}
             key={order.id}
           />
         </CatalogGroup>
 
         {cancellation &&
           (cancellation.refundRequired ||
-            cancellation.trackingRemovalRequired) && (
+            cancellation.trackingRemovalRequired ||
+            cancellation.stockReturnRequired) && (
             <CatalogGroup title={copy.cancellation}>
               <ul className={styles.followUps}>
                 {cancellation.refundRequired && <li>{copy.refundRequired}</li>}
+                {cancellation.stockReturnRequired && (
+                  <li>{copy.stockReturnRequired}</li>
+                )}
                 {cancellation.trackingRemovalRequired && (
                   <li>{copy.trackingRemovalRequired}</li>
                 )}
