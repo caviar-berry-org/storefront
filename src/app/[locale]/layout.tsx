@@ -13,7 +13,10 @@ import { Header } from "@/components/store/header";
 import { FloatingContact } from "@/components/store/floating-contact";
 import { NewsletterPrompt } from "@/components/store/newsletter-prompt";
 import { Motion } from "@/components/store/motion";
-import { SessionSplash } from "@/components/ui/session-splash";
+import {
+  SessionSplash,
+  SessionSplashStyle,
+} from "@/components/ui/session-splash";
 import { LocaleScroll } from "@/components/store/locale-scroll";
 import { VisitAttribution } from "@/components/store/visit-attribution";
 import { site } from "@/lib/metadata";
@@ -73,6 +76,7 @@ export default async function RootLayout({
   return (
     <html lang={documentLanguage(locale)}>
       <head>
+        <SessionSplashStyle />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
