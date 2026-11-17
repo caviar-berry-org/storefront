@@ -735,3 +735,153 @@ test("online checkout stays silent until verified payment, then queues one paid 
     delete process.env.OWNER_NOTIFICATION_EMAILS;
   }
 });
+
+function unpaidRow(
+  totalMinor: number,
+  overrides: Record<string, unknown> = {},
+) {
+  return {
+    status: "new",
+    totalMinor,
+    inventoryState: "consumed",
+    payment: { method: "iban", status: "pending" },
+    ...overrides,
+  };
+}
+function restock(f: ReturnType<typeof fixture>, quantity: number) {
+  const path = `${catalogCollections.caviar.records}/premium`;
+  const record = f.rows.get(path)! as unknown as typeof f.record;
+  record.data.stock[f.pack.id] = {
+    quantity,
+    reserved: 0,
+    batches: [{ code: "TEST", expiresOn: "2099-12-31", quantity }],
+  };
+  f.rows.set(path, record as unknown as Record<string, unknown>);
+}
+const unpaidRefusal = (detail: "outstanding" | "contact") => (error: unknown) =>
+  (error as { code?: string; detail?: string }).code === "UNPAID" &&
+  (error as { detail?: string }).detail === detail;
+
+test("unpaid orders stop at the shop-wide limit while card checkout stays open", async () => {
+  const f = fixture();
+  const books = "orderBooks/development/orders";
+  for (let i = 0; i < 14; i++) f.rows.set(`${books}/held-${i}`, unpaidRow(100));
+  // Neither holds stock any more, so neither counts.
+  f.rows.set(`${books}/cancelled`, unpaidRow(100, { status: "cancelled" }));
+  f.rows.set(
+    `${books}/paid`,
+    unpaidRow(100, { payment: { method: "iban", status: "paid" } }),
+  );
+  const transfer = {
+    ...f.input,
+    contact: { ...f.input.contact, payment: "transfer" as const },
+  };
+  const fifteenth = await f.creation.createOrder(transfer, randomUUID(), "t");
+  assert.equal(fifteenth.inventoryState, "consumed");
+
+  const before = structuredClone(
+    (
+      f.rows.get(
+        `${catalogCollections.caviar.records}/premium`,
+      ) as unknown as typeof f.record
+    ).data.stock[f.pack.id],
+  );
+  const orders = [...f.rows.keys()].filter((key) =>
+    key.startsWith(books),
+  ).length;
+  await assert.rejects(
+    f.creation.createOrder(
+      {
+        ...transfer,
+        contact: {
+          ...transfer.contact,
+          email: "other@example.com",
+          phone: "+380991230000",
+          payment: "invoice",
+        },
+      },
+      randomUUID(),
+      "t",
+    ),
+    unpaidRefusal("outstanding"),
+  );
+  // The refusal touched nothing: no order, no stock movement.
+  assert.equal(
+    [...f.rows.keys()].filter((key) => key.startsWith(books)).length,
+    orders,
+  );
+  assert.deepEqual(
+    (
+      f.rows.get(
+        `${catalogCollections.caviar.records}/premium`,
+      ) as unknown as typeof f.record
+    ).data.stock[f.pack.id],
+    before,
+  );
+
+  const card = await f.creation.createOrder(f.input, randomUUID(), "t");
+  assert.equal(card.inventoryState, "reserved");
+});
+
+test("the shop-wide limit also caps the combined value of unpaid orders", async () => {
+  const f = fixture();
+  f.rows.set(
+    "orderBooks/development/orders/large",
+    unpaidRow(29_995_000, { status: "processing" }),
+  );
+  await assert.rejects(
+    f.creation.createOrder(
+      { ...f.input, contact: { ...f.input.contact, payment: "transfer" } },
+      randomUUID(),
+      "t",
+    ),
+    unpaidRefusal("outstanding"),
+  );
+});
+
+test("one mailbox or one phone gets three unpaid orders a day, however the address is spelled", async () => {
+  const f = fixture();
+  restock(f, 10);
+  const transfer = (email: string, phone = f.input.contact.phone) =>
+    f.creation.createOrder(
+      {
+        ...f.input,
+        contact: { ...f.input.contact, payment: "transfer", email, phone },
+      },
+      randomUUID(),
+      "t",
+    );
+  await transfer("Anna.K+1@gmail.com");
+  await transfer("annak+2@googlemail.com");
+  await transfer("ANNAK@gmail.com");
+  await assert.rejects(
+    transfer("a.n.n.a.k@gmail.com", "+380991230001"),
+    unpaidRefusal("contact"),
+  );
+  // A fresh mailbox on a phone that is already used up is refused too.
+  await assert.rejects(transfer("fresh@example.com"), unpaidRefusal("contact"));
+  await transfer("fresh@example.com", "+380991230002");
+  // Card checkout for the same person is not counted against them.
+  const card = await f.creation.createOrder(
+    {
+      ...f.input,
+      contact: { ...f.input.contact, email: "annak@gmail.com" },
+    },
+    randomUUID(),
+    "t",
+  );
+  assert.equal(card.payment.method, "online");
+});
+
+test("an accepted unpaid order replays through its idempotency key even after the limits fill", async () => {
+  const f = fixture();
+  const key = randomUUID();
+  const transfer = {
+    ...f.input,
+    contact: { ...f.input.contact, payment: "transfer" as const },
+  };
+  const order = await f.creation.createOrder(transfer, key, "t");
+  for (let i = 0; i < 15; i++)
+    f.rows.set(`orderBooks/development/orders/held-${i}`, unpaidRow(100));
+  assert.equal((await f.creation.createOrder(transfer, key, "t")).id, order.id);
+});

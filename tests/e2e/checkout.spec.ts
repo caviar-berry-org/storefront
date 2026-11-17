@@ -192,6 +192,56 @@ test("English checkout validates delivery, preserves the draft, and handles API 
   await expect(page).toHaveURL(/\/en$/);
 });
 
+test("a refused unpaid order points the buyer to card payment and keeps the draft", async ({
+  page,
+}) => {
+  await page.goto("/en");
+  const cart = page.locator("#cart");
+  const checkout = page.locator("#checkout");
+  await page.locator("#hdr").getByRole("button", { name: /Cart/ }).click();
+  await cart.getByRole("button", { name: "Place order" }).click();
+  await checkout.getByLabel("Full name").fill("Test Shopper");
+  await checkout.getByLabel("Phone number").fill("098 111 22 33");
+  await checkout
+    .getByLabel("Email", { exact: true })
+    .fill("shopper@example.com");
+  await chooseBranch(checkout);
+  await checkout.getByRole("checkbox").check();
+  await checkout.getByRole("radio", { name: "Bank transfer" }).check();
+  // The server's shape for both unpaid-order limits: a field error on payment.
+  const refusal =
+    "Bank transfer and company invoice are not available for this order right now.";
+  const payments: string[] = [];
+  await page.route("**/api/checkout", async (route) => {
+    payments.push(route.request().postDataJSON().contact.payment);
+    await route.fulfill({
+      status: 422,
+      json: {
+        code: "INVALID_CONTACT",
+        errors: { payment: `${refusal} Choose online card payment.` },
+      },
+    });
+  });
+  await checkout.locator("button[type=submit]").click();
+  const card = checkout.getByRole("radio", { name: "Pay online by card" });
+  await expect(card).toBeFocused();
+  await expect(checkout.locator("#hint-payment")).toContainText(refusal);
+  await expect(card).toHaveAttribute("aria-describedby", "hint-payment");
+  await card.check();
+  // FormFeedback keeps the last text while it collapses, so "cleared" means the
+  // wrapper is closed and the radio no longer points at it, not an empty node.
+  await expect(
+    checkout
+      .locator(".form-feedback")
+      .filter({ has: page.locator("#hint-payment") }),
+  ).toHaveAttribute("data-visible", "false");
+  await expect(card).not.toHaveAttribute("aria-describedby", /.+/);
+  await expect(checkout.getByLabel("Email", { exact: true })).toHaveValue(
+    "shopper@example.com",
+  );
+  expect(payments).toEqual(["transfer"]);
+});
+
 test("undo preserves the line and timeout removes it without touching the other items", async ({
   page,
 }) => {

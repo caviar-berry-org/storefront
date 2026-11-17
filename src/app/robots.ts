@@ -21,7 +21,6 @@ const citing = [
   "Perplexity-User",
   "Applebot",
   "DuckDuckBot",
-  "YandexBot",
 ];
 
 /**
@@ -48,8 +47,10 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "*", allow: "/", disallow: closed },
       { userAgent: citing, allow: "/", disallow: closed },
       { userAgent: training, allow: "/", disallow: closed },
+      // "Yandex" matches every Yandex crawler. Shut out by the client's decision,
+      // not for SEO reasons; without this line the wildcard rule would admit it.
+      { userAgent: "Yandex", disallow: "/" },
     ],
     sitemap: new URL("/sitemap.xml", site.url).toString(),
-    host: site.url.origin,
   };
 }

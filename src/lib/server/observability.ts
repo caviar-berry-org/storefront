@@ -8,6 +8,7 @@ import "server-only";
 export type CommerceEvent =
   | "checkout.unavailable"
   | "checkout.limited"
+  | "checkout.unpaid_refused"
   | "invoice.unknown"
   | "payment.applied"
   | "payment.rejected"
