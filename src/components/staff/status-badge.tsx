@@ -51,6 +51,8 @@ const mailTones: Record<string, Tone> = {
   accepted: "done",
   failed: "problem",
   unknown: "problem",
+  // Parked on purpose, like a hidden catalogue record: nothing to chase.
+  suppressed: "closed",
 };
 
 /** A draft still owes work, a hidden record was parked on purpose. */

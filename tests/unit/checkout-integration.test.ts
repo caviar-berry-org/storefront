@@ -885,3 +885,85 @@ test("an accepted unpaid order replays through its idempotency key even after th
     f.rows.set(`orderBooks/development/orders/held-${i}`, unpaidRow(100));
   assert.equal((await f.creation.createOrder(transfer, key, "t")).id, order.id);
 });
+
+test("cancelling an order suppresses its queued letter instead of mailing it later", async () => {
+  const f = fixture();
+  process.env.ORDER_EMAIL_ENABLED = "true";
+  const transfer = {
+    ...f.input,
+    contact: { ...f.input.contact, payment: "transfer" as const },
+  };
+  const order = await f.creation.createOrder(transfer, randomUUID(), "t");
+  const path = `orderBooks/development/orders/${order.id}`;
+  // The letter failed once and is waiting for the daily sweep, which is exactly
+  // the window in which staff cancel an order nobody paid for.
+  f.rows.set(`${path}/notifications/created`, {
+    state: "failed",
+    at: Date.now() - 120000,
+    attempts: 1,
+    lastAttemptAt: Date.now() - 120000,
+  });
+  f.rows.set(path, { ...f.rows.get(path), status: "cancelled" });
+
+  let sent = 0;
+  const { deliverOrderNotifications } = serverModule<
+    typeof import("../../src/lib/server/orders/notifications.ts")
+  >("src/lib/server/orders/notifications.ts", {
+    [resolve("src/lib/server/firestore.ts")]: {
+      firebaseAdminDatabase: () => f.db,
+    },
+    [resolve("src/lib/server/mail/smtp.ts")]: {
+      MailError: class extends Error {},
+      sendMail: async () => {
+        sent++;
+        return {};
+      },
+    },
+  });
+  await deliverOrderNotifications(order.id);
+  await deliverOrderNotifications(order.id);
+
+  assert.equal(sent, 0, "a cancelled order must not be asked to pay");
+  assert.equal(
+    f.rows.get(`${path}/notifications/created`)?.state,
+    "suppressed",
+    "a skipped letter would stay 'failed' and be swept again every day",
+  );
+  assert.equal(
+    (f.rows.get(path) as unknown as Order).mail?.created,
+    "suppressed",
+  );
+});
+
+test("a live order still gets its letter after the cancellation guard", async () => {
+  const f = fixture();
+  process.env.ORDER_EMAIL_ENABLED = "true";
+  const order = await f.creation.createOrder(
+    { ...f.input, contact: { ...f.input.contact, payment: "transfer" } },
+    randomUUID(),
+    "t",
+  );
+  let sent = 0;
+  const { deliverOrderNotifications } = serverModule<
+    typeof import("../../src/lib/server/orders/notifications.ts")
+  >("src/lib/server/orders/notifications.ts", {
+    [resolve("src/lib/server/firestore.ts")]: {
+      firebaseAdminDatabase: () => f.db,
+    },
+    [resolve("src/lib/server/mail/smtp.ts")]: {
+      MailError: class extends Error {},
+      sendMail: async () => {
+        sent++;
+        return {};
+      },
+    },
+  });
+  await deliverOrderNotifications(order.id);
+  assert.equal(sent, 1);
+  assert.equal(
+    f.rows.get(
+      `orderBooks/development/orders/${order.id}/notifications/created`,
+    )?.state,
+    "accepted",
+  );
+});
