@@ -82,9 +82,12 @@ function checkEnvironment(
       issues.push(
         "Production must not send from the DEV mailbox; create the production sender.",
       );
-    if (production && env.SMTP_HOST?.trim() === "caviar.net.ua")
+    // The apex record now points at the site host, which does not speak SMTP.
+    // That breaks DEV exactly as it breaks production, so the rule is not gated
+    // on the environment: mail always goes to the provider's own hostname.
+    if (env.SMTP_HOST?.trim().toLowerCase() === "caviar.net.ua")
       issues.push(
-        "SMTP_HOST must be a mail hostname independent of the site A record before cutover.",
+        "SMTP_HOST must be the mail hostname (mail.caviar.net.ua), not the site domain.",
       );
     for (const key of ["SMTP_HOST", "SMTP_PASSWORD"])
       if (!has(key)) issues.push(`${key} is required for mail.`);
