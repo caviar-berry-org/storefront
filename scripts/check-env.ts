@@ -94,6 +94,23 @@ function checkEnvironment(
     if (env.SMTP_PORT !== "465" || env.SMTP_SECURE !== "true")
       issues.push("SMTP_PORT must be 465 with SMTP_SECURE=true.");
   }
+  // Operator alerts are optional everywhere, but half a configuration is worse
+  // than none: the sink stays silent and nobody notices it never spoke.
+  if (has("TELEGRAM_BOT_TOKEN") !== has("TELEGRAM_CHAT_ID"))
+    issues.push(
+      "TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID must be set together, or both left unset.",
+    );
+  for (const key of [
+    "TELEGRAM_CHAT_ID",
+    "TELEGRAM_TOPIC_CRASH",
+    "TELEGRAM_TOPIC_ERROR",
+    "TELEGRAM_TOPIC_ORDER",
+    "TELEGRAM_TOPIC_SUBMISSION",
+    "TELEGRAM_TOPIC_DAILY",
+  ])
+    if (has(key) && !/^-?\d+$/.test(env[key]!.trim()))
+      issues.push(`${key} must be a numeric Telegram id.`);
+
   if (
     has("MAIL_REPLY_TO") &&
     !/^[^\s@,]+@[^\s@,]+\.[^\s@,]+$/.test(env.MAIL_REPLY_TO!.trim())

@@ -33,12 +33,25 @@ export function memoryFirestore() {
       rows.set(path, structuredClone(data)),
   });
   type Filter = { field: string; op: string; expected: unknown };
-  const matches = (data: Record<string, unknown>, filter: Filter) =>
-    filter.op === "array-contains"
-      ? (value(data, filter.field) as unknown[] | undefined)?.includes(
-          filter.expected,
-        )
-      : value(data, filter.field) === filter.expected;
+  const matches = (data: Record<string, unknown>, filter: Filter) => {
+    const actual = value(data, filter.field);
+    if (filter.op === "array-contains")
+      return (actual as unknown[] | undefined)?.includes(filter.expected);
+    // Range filters: the digest counts records newer than a cut-off.
+    if ([">=", ">", "<=", "<"].includes(filter.op)) {
+      const left = Number(actual);
+      const right = Number(filter.expected);
+      if (!Number.isFinite(left) || !Number.isFinite(right)) return false;
+      return filter.op === ">="
+        ? left >= right
+        : filter.op === ">"
+          ? left > right
+          : filter.op === "<="
+            ? left <= right
+            : left < right;
+    }
+    return actual === filter.expected;
+  };
   const runQuery = (path: string, filters: Filter[], take?: number) =>
     [...rows]
       .filter(

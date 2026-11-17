@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, extname, resolve } from "node:path";
 import ts from "typescript";
@@ -19,7 +19,11 @@ export function serverModule<T>(entry: string, mocks: Record<string, unknown>) {
     let file = name.startsWith("@/")
       ? resolve("src", name.slice(2))
       : resolve(parent, name);
-    if (!extname(file)) file += ".ts";
+    // Resolve like Node and TypeScript do: a bare path is either the module
+    // itself or a directory with an index. Without the second case any import
+    // of `@/i18n` fails here while building and running perfectly well.
+    if (!extname(file))
+      file = existsSync(`${file}.ts`) ? `${file}.ts` : `${file}/index.ts`;
     if (Object.hasOwn(mocks, file)) return mocks[file];
     if (file.endsWith(".json")) return JSON.parse(readFileSync(file, "utf8"));
     if (cache.has(file)) return cache.get(file)!.exports;

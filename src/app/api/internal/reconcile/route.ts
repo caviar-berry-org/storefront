@@ -6,6 +6,7 @@ import { deliverCustomerNotifications } from "@/lib/server/orders/notifications"
 import { firebaseAdminDatabase } from "@/lib/server/firestore";
 import { errorLabel, logCommerce } from "@/lib/server/observability";
 import { smtpTransport, type MailTransport } from "@/lib/server/mail/smtp";
+import { sendScheduledDigests } from "@/lib/server/notify/digest";
 export const maxDuration = 60;
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
@@ -92,6 +93,9 @@ export async function GET(request: Request) {
     }
     await queueRestockMail();
     await deliverMailJobs();
+    // Last, and never allowed to fail the job: reconciliation moves money and
+    // stock, a summary only describes it.
+    await sendScheduledDigests().catch(() => {});
     return Response.json(
       { checked, unavailable, mailed },
       { headers: { "Cache-Control": "no-store" } },
