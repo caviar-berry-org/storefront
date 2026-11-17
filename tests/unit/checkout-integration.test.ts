@@ -967,3 +967,76 @@ test("a live order still gets its letter after the cancellation guard", async ()
     "accepted",
   );
 });
+
+test("an order whose product record vanished still cancels, and says the stock was not returned", async () => {
+  const f = fixture();
+  const order = await f.creation.createOrder(
+    { ...f.input, contact: { ...f.input.contact, payment: "transfer" } },
+    randomUUID(),
+    "test",
+  );
+  const path = `orderBooks/development/orders/${order.id}`;
+  f.rows.set(path, { ...f.rows.get(path), status: "processing" });
+  // Deleted straight from the console: the app itself refuses to delete a
+  // product an order references, so this state only ever arrives out of band.
+  f.rows.delete(`${catalogCollections.caviar.records}/premium`);
+
+  const { cancelOrder } = serverModule<
+    typeof import("../../src/lib/server/orders/cancel.ts")
+  >("src/lib/server/orders/cancel.ts", {
+    [resolve("src/lib/server/firestore.ts")]: {
+      firebaseAdminDatabase: () => f.db,
+    },
+  });
+  const result = await cancelOrder(order.id, 1, { uid: "test-staff" });
+
+  assert.ok(
+    "changed" in result && result.changed,
+    "throwing here left the order uncancellable forever",
+  );
+  const stored = f.rows.get(path) as unknown as Order;
+  assert.equal(stored.status, "cancelled");
+  assert.equal(
+    stored.inventoryState,
+    "consumed",
+    "nothing was put back, so the order must not claim released stock",
+  );
+  assert.equal(stored.cancellation?.stockReturnRequired, true);
+});
+
+test("a cancellation that cannot restore the stock writes nothing to the catalogue", async () => {
+  const f = fixture();
+  const order = await f.creation.createOrder(
+    { ...f.input, contact: { ...f.input.contact, payment: "transfer" } },
+    randomUUID(),
+    "test",
+  );
+  const orderPath = `orderBooks/development/orders/${order.id}`;
+  f.rows.set(orderPath, { ...f.rows.get(orderPath), status: "processing" });
+  const recordPath = `${catalogCollections.caviar.records}/premium`;
+  // The pack the order was sold from is gone, so its quantity cannot be put
+  // back. Restoration is all-or-nothing, so the record must be left alone.
+  const damaged = structuredClone(f.rows.get(recordPath)) as typeof f.record;
+  delete damaged.data.stock[f.pack.id];
+  f.rows.set(recordPath, damaged as never);
+  const revisionBefore = damaged.revision;
+
+  const { cancelOrder } = serverModule<
+    typeof import("../../src/lib/server/orders/cancel.ts")
+  >("src/lib/server/orders/cancel.ts", {
+    [resolve("src/lib/server/firestore.ts")]: {
+      firebaseAdminDatabase: () => f.db,
+    },
+  });
+  const result = await cancelOrder(order.id, 1, { uid: "test-staff" });
+
+  assert.ok("changed" in result && result.changed);
+  const stored = f.rows.get(orderPath) as unknown as Order;
+  assert.equal(stored.cancellation?.stockReturnRequired, true);
+  assert.equal(stored.inventoryState, "consumed");
+  assert.equal(
+    (f.rows.get(recordPath) as unknown as typeof f.record).revision,
+    revisionBefore,
+    "a half-restored catalogue write would bump the revision",
+  );
+});
