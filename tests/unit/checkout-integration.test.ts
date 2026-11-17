@@ -735,3 +735,308 @@ test("online checkout stays silent until verified payment, then queues one paid 
     delete process.env.OWNER_NOTIFICATION_EMAILS;
   }
 });
+
+function unpaidRow(
+  totalMinor: number,
+  overrides: Record<string, unknown> = {},
+) {
+  return {
+    status: "new",
+    totalMinor,
+    inventoryState: "consumed",
+    payment: { method: "iban", status: "pending" },
+    ...overrides,
+  };
+}
+function restock(f: ReturnType<typeof fixture>, quantity: number) {
+  const path = `${catalogCollections.caviar.records}/premium`;
+  const record = f.rows.get(path)! as unknown as typeof f.record;
+  record.data.stock[f.pack.id] = {
+    quantity,
+    reserved: 0,
+    batches: [{ code: "TEST", expiresOn: "2099-12-31", quantity }],
+  };
+  f.rows.set(path, record as unknown as Record<string, unknown>);
+}
+const unpaidRefusal = (detail: "outstanding" | "contact") => (error: unknown) =>
+  (error as { code?: string; detail?: string }).code === "UNPAID" &&
+  (error as { detail?: string }).detail === detail;
+
+test("unpaid orders stop at the shop-wide limit while card checkout stays open", async () => {
+  const f = fixture();
+  const books = "orderBooks/development/orders";
+  for (let i = 0; i < 14; i++) f.rows.set(`${books}/held-${i}`, unpaidRow(100));
+  // Neither holds stock any more, so neither counts.
+  f.rows.set(`${books}/cancelled`, unpaidRow(100, { status: "cancelled" }));
+  f.rows.set(
+    `${books}/paid`,
+    unpaidRow(100, { payment: { method: "iban", status: "paid" } }),
+  );
+  const transfer = {
+    ...f.input,
+    contact: { ...f.input.contact, payment: "transfer" as const },
+  };
+  const fifteenth = await f.creation.createOrder(transfer, randomUUID(), "t");
+  assert.equal(fifteenth.inventoryState, "consumed");
+
+  const before = structuredClone(
+    (
+      f.rows.get(
+        `${catalogCollections.caviar.records}/premium`,
+      ) as unknown as typeof f.record
+    ).data.stock[f.pack.id],
+  );
+  const orders = [...f.rows.keys()].filter((key) =>
+    key.startsWith(books),
+  ).length;
+  await assert.rejects(
+    f.creation.createOrder(
+      {
+        ...transfer,
+        contact: {
+          ...transfer.contact,
+          email: "other@example.com",
+          phone: "+380991230000",
+          payment: "invoice",
+        },
+      },
+      randomUUID(),
+      "t",
+    ),
+    unpaidRefusal("outstanding"),
+  );
+  // The refusal touched nothing: no order, no stock movement.
+  assert.equal(
+    [...f.rows.keys()].filter((key) => key.startsWith(books)).length,
+    orders,
+  );
+  assert.deepEqual(
+    (
+      f.rows.get(
+        `${catalogCollections.caviar.records}/premium`,
+      ) as unknown as typeof f.record
+    ).data.stock[f.pack.id],
+    before,
+  );
+
+  const card = await f.creation.createOrder(f.input, randomUUID(), "t");
+  assert.equal(card.inventoryState, "reserved");
+});
+
+test("the shop-wide limit also caps the combined value of unpaid orders", async () => {
+  const f = fixture();
+  f.rows.set(
+    "orderBooks/development/orders/large",
+    unpaidRow(29_995_000, { status: "processing" }),
+  );
+  await assert.rejects(
+    f.creation.createOrder(
+      { ...f.input, contact: { ...f.input.contact, payment: "transfer" } },
+      randomUUID(),
+      "t",
+    ),
+    unpaidRefusal("outstanding"),
+  );
+});
+
+test("one mailbox or one phone gets three unpaid orders a day, however the address is spelled", async () => {
+  const f = fixture();
+  restock(f, 10);
+  const transfer = (email: string, phone = f.input.contact.phone) =>
+    f.creation.createOrder(
+      {
+        ...f.input,
+        contact: { ...f.input.contact, payment: "transfer", email, phone },
+      },
+      randomUUID(),
+      "t",
+    );
+  await transfer("Anna.K+1@gmail.com");
+  await transfer("annak+2@googlemail.com");
+  await transfer("ANNAK@gmail.com");
+  await assert.rejects(
+    transfer("a.n.n.a.k@gmail.com", "+380991230001"),
+    unpaidRefusal("contact"),
+  );
+  // A fresh mailbox on a phone that is already used up is refused too.
+  await assert.rejects(transfer("fresh@example.com"), unpaidRefusal("contact"));
+  await transfer("fresh@example.com", "+380991230002");
+  // Card checkout for the same person is not counted against them.
+  const card = await f.creation.createOrder(
+    {
+      ...f.input,
+      contact: { ...f.input.contact, email: "annak@gmail.com" },
+    },
+    randomUUID(),
+    "t",
+  );
+  assert.equal(card.payment.method, "online");
+});
+
+test("an accepted unpaid order replays through its idempotency key even after the limits fill", async () => {
+  const f = fixture();
+  const key = randomUUID();
+  const transfer = {
+    ...f.input,
+    contact: { ...f.input.contact, payment: "transfer" as const },
+  };
+  const order = await f.creation.createOrder(transfer, key, "t");
+  for (let i = 0; i < 15; i++)
+    f.rows.set(`orderBooks/development/orders/held-${i}`, unpaidRow(100));
+  assert.equal((await f.creation.createOrder(transfer, key, "t")).id, order.id);
+});
+
+test("cancelling an order suppresses its queued letter instead of mailing it later", async () => {
+  const f = fixture();
+  process.env.ORDER_EMAIL_ENABLED = "true";
+  const transfer = {
+    ...f.input,
+    contact: { ...f.input.contact, payment: "transfer" as const },
+  };
+  const order = await f.creation.createOrder(transfer, randomUUID(), "t");
+  const path = `orderBooks/development/orders/${order.id}`;
+  // The letter failed once and is waiting for the daily sweep, which is exactly
+  // the window in which staff cancel an order nobody paid for.
+  f.rows.set(`${path}/notifications/created`, {
+    state: "failed",
+    at: Date.now() - 120000,
+    attempts: 1,
+    lastAttemptAt: Date.now() - 120000,
+  });
+  f.rows.set(path, { ...f.rows.get(path), status: "cancelled" });
+
+  let sent = 0;
+  const { deliverOrderNotifications } = serverModule<
+    typeof import("../../src/lib/server/orders/notifications.ts")
+  >("src/lib/server/orders/notifications.ts", {
+    [resolve("src/lib/server/firestore.ts")]: {
+      firebaseAdminDatabase: () => f.db,
+    },
+    [resolve("src/lib/server/mail/smtp.ts")]: {
+      MailError: class extends Error {},
+      sendMail: async () => {
+        sent++;
+        return {};
+      },
+    },
+  });
+  await deliverOrderNotifications(order.id);
+  await deliverOrderNotifications(order.id);
+
+  assert.equal(sent, 0, "a cancelled order must not be asked to pay");
+  assert.equal(
+    f.rows.get(`${path}/notifications/created`)?.state,
+    "suppressed",
+    "a skipped letter would stay 'failed' and be swept again every day",
+  );
+  assert.equal(
+    (f.rows.get(path) as unknown as Order).mail?.created,
+    "suppressed",
+  );
+});
+
+test("a live order still gets its letter after the cancellation guard", async () => {
+  const f = fixture();
+  process.env.ORDER_EMAIL_ENABLED = "true";
+  const order = await f.creation.createOrder(
+    { ...f.input, contact: { ...f.input.contact, payment: "transfer" } },
+    randomUUID(),
+    "t",
+  );
+  let sent = 0;
+  const { deliverOrderNotifications } = serverModule<
+    typeof import("../../src/lib/server/orders/notifications.ts")
+  >("src/lib/server/orders/notifications.ts", {
+    [resolve("src/lib/server/firestore.ts")]: {
+      firebaseAdminDatabase: () => f.db,
+    },
+    [resolve("src/lib/server/mail/smtp.ts")]: {
+      MailError: class extends Error {},
+      sendMail: async () => {
+        sent++;
+        return {};
+      },
+    },
+  });
+  await deliverOrderNotifications(order.id);
+  assert.equal(sent, 1);
+  assert.equal(
+    f.rows.get(
+      `orderBooks/development/orders/${order.id}/notifications/created`,
+    )?.state,
+    "accepted",
+  );
+});
+
+test("an order whose product record vanished still cancels, and says the stock was not returned", async () => {
+  const f = fixture();
+  const order = await f.creation.createOrder(
+    { ...f.input, contact: { ...f.input.contact, payment: "transfer" } },
+    randomUUID(),
+    "test",
+  );
+  const path = `orderBooks/development/orders/${order.id}`;
+  f.rows.set(path, { ...f.rows.get(path), status: "processing" });
+  // Deleted straight from the console: the app itself refuses to delete a
+  // product an order references, so this state only ever arrives out of band.
+  f.rows.delete(`${catalogCollections.caviar.records}/premium`);
+
+  const { cancelOrder } = serverModule<
+    typeof import("../../src/lib/server/orders/cancel.ts")
+  >("src/lib/server/orders/cancel.ts", {
+    [resolve("src/lib/server/firestore.ts")]: {
+      firebaseAdminDatabase: () => f.db,
+    },
+  });
+  const result = await cancelOrder(order.id, 1, { uid: "test-staff" });
+
+  assert.ok(
+    "changed" in result && result.changed,
+    "throwing here left the order uncancellable forever",
+  );
+  const stored = f.rows.get(path) as unknown as Order;
+  assert.equal(stored.status, "cancelled");
+  assert.equal(
+    stored.inventoryState,
+    "consumed",
+    "nothing was put back, so the order must not claim released stock",
+  );
+  assert.equal(stored.cancellation?.stockReturnRequired, true);
+});
+
+test("a cancellation that cannot restore the stock writes nothing to the catalogue", async () => {
+  const f = fixture();
+  const order = await f.creation.createOrder(
+    { ...f.input, contact: { ...f.input.contact, payment: "transfer" } },
+    randomUUID(),
+    "test",
+  );
+  const orderPath = `orderBooks/development/orders/${order.id}`;
+  f.rows.set(orderPath, { ...f.rows.get(orderPath), status: "processing" });
+  const recordPath = `${catalogCollections.caviar.records}/premium`;
+  // The pack the order was sold from is gone, so its quantity cannot be put
+  // back. Restoration is all-or-nothing, so the record must be left alone.
+  const damaged = structuredClone(f.rows.get(recordPath)) as typeof f.record;
+  delete damaged.data.stock[f.pack.id];
+  f.rows.set(recordPath, damaged as never);
+  const revisionBefore = damaged.revision;
+
+  const { cancelOrder } = serverModule<
+    typeof import("../../src/lib/server/orders/cancel.ts")
+  >("src/lib/server/orders/cancel.ts", {
+    [resolve("src/lib/server/firestore.ts")]: {
+      firebaseAdminDatabase: () => f.db,
+    },
+  });
+  const result = await cancelOrder(order.id, 1, { uid: "test-staff" });
+
+  assert.ok("changed" in result && result.changed);
+  const stored = f.rows.get(orderPath) as unknown as Order;
+  assert.equal(stored.cancellation?.stockReturnRequired, true);
+  assert.equal(stored.inventoryState, "consumed");
+  assert.equal(
+    (f.rows.get(recordPath) as unknown as typeof f.record).revision,
+    revisionBefore,
+    "a half-restored catalogue write would bump the revision",
+  );
+});

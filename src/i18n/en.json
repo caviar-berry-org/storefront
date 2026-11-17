@@ -368,6 +368,7 @@
   "checkout.bankTransfer": "Bank transfer",
   "checkout.companyInvoice": "Company invoice",
   "checkout.errorPayment": "Choose a payment method.",
+  "checkout.unpaidUnavailable": "Bank transfer and company invoice are not available for this order right now. Choose online card payment, or write to us and we will help you place it.",
   "checkout.promoInvalid": "This promo code is no longer active. Return to the cart to change or remove it.",
   "checkout.promoUnavailable": "We couldn’t verify the promo code. Try again or return to the cart to remove it.",
   "cart.removeUnavailable": "Remove item",

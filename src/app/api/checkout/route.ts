@@ -179,6 +179,20 @@ export async function POST(request: Request) {
         );
       if (error.code === "PROMO")
         return formError(t, 422, "INVALID_PROMO", "cart.promoRejected");
+      if (error.code === "UNPAID") {
+        // The shop-wide limit tripping means unpaid orders are piling up: worth
+        // a human's attention. One contact over its daily allowance is routine.
+        logCommerce(
+          error.detail === "outstanding" ? "error" : "warn",
+          "checkout.unpaid_refused",
+          { locale, payment: normalized.payment, reason: error.detail },
+        );
+        // One message for both limits, so it never tells a stranger whether an
+        // address has placed orders today.
+        return formError(t, 422, "INVALID_CONTACT", "checkout.text1", {
+          payment: t("checkout.unpaidUnavailable"),
+        });
+      }
       if (error.code === "LIMIT") {
         logCommerce("warn", "checkout.limited", { locale });
         return formError(t, 429, "RATE_LIMITED", "newsletter.rateLimited");

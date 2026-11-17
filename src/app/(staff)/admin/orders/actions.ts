@@ -8,11 +8,11 @@ import { applyPayment } from "@/lib/server/checkout/payment";
 import { reconcileOrder } from "@/lib/server/checkout/payment";
 import { deliverOrderNotifications } from "@/lib/server/orders/notifications";
 import { revalidatePath } from "next/cache";
-import { customerSearchTerm } from "@/domain/customer-directory";
 import {
   isOrderId,
   isOrderStatus,
   normalizeTrackingNumber,
+  orderSearchTerm,
   orderTypes,
   type OrderChange,
   type OrderCursor,
@@ -32,7 +32,7 @@ export async function queryOrders(
   if (
     typeof filters?.search !== "string" ||
     filters.search.length > 254 ||
-    customerSearchTerm(filters.search) === null ||
+    orderSearchTerm(filters.search) === null ||
     (filters.type !== "all" && !orderTypes.includes(filters.type)) ||
     (filters.status !== "all" &&
       filters.status !== "active" &&

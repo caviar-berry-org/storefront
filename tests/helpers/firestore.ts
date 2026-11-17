@@ -32,16 +32,42 @@ export function memoryFirestore() {
     set: async (data: Record<string, unknown>) =>
       rows.set(path, structuredClone(data)),
   });
+  type Filter = { field: string; op: string; expected: unknown };
+  const matches = (data: Record<string, unknown>, filter: Filter) =>
+    filter.op === "array-contains"
+      ? (value(data, filter.field) as unknown[] | undefined)?.includes(
+          filter.expected,
+        )
+      : value(data, filter.field) === filter.expected;
+  const runQuery = (path: string, filters: Filter[], take?: number) =>
+    [...rows]
+      .filter(
+        ([key, data]) =>
+          key.startsWith(`${path}/`) &&
+          key.split("/").length === path.split("/").length + 1 &&
+          filters.every((filter) => matches(data, filter)),
+      )
+      .slice(0, take)
+      .map(([key]) => snapshot(key));
+  // Chainable like the Admin SDK; `select` is a no-op because the caller reads
+  // fields with `get`. The first filter stays on top for older call sites.
+  const query = (path: string, filters: Filter[], take?: number) => ({
+    path,
+    filters,
+    take,
+    query: true,
+    ...filters[0],
+    where: (field: string, op: string, expected: unknown) =>
+      query(path, [...filters, { field, op, expected }], take),
+    select: () => query(path, filters, take),
+    limit: (count: number) => query(path, filters, count),
+    get: async () => ({ docs: runQuery(path, filters, take) }),
+  });
   const collection = (path: string) => ({
     path,
     doc: (id = String(Math.random())) => ref(`${path}/${id}`),
-    where: (field: string, op: string, expected: unknown) => ({
-      path,
-      field,
-      op,
-      expected,
-      limit: () => ({ path, field, op, expected, query: true }),
-    }),
+    where: (field: string, op: string, expected: unknown) =>
+      query(path, [{ field, op, expected }]),
     orderBy: (field: string, direction: "asc" | "desc" = "asc") => ({
       path,
       orderField: field,
@@ -82,9 +108,7 @@ export function memoryFirestore() {
           get: async (
             doc: Ref & {
               query?: boolean;
-              field?: string;
-              op?: string;
-              expected?: unknown;
+              filters?: Filter[];
               orderField?: string;
               direction?: "asc" | "desc";
               take?: number;
@@ -113,18 +137,7 @@ export function memoryFirestore() {
                     .map(([key]) => snapshot(key)),
                 };
               }
-              return {
-                docs: inCollection
-                  .filter(([, data]) =>
-                    doc.op === "array-contains"
-                      ? (value(data, doc.field!) as unknown[])?.includes(
-                          doc.expected,
-                        )
-                      : value(data, doc.field!) === doc.expected,
-                  )
-                  .slice(0, 1)
-                  .map(([key]) => snapshot(key)),
-              };
+              return { docs: runQuery(doc.path, doc.filters ?? [], doc.take) };
             }
             return snapshot(doc.path);
           },

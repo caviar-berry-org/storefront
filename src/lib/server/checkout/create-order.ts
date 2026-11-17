@@ -10,6 +10,12 @@ import { findVariant, type Product } from "@/domain/catalog";
 import { productView, type CatalogRecord } from "@/domain/managed-catalog";
 import { reserveStock, consumeStock } from "@/domain/checkout-stock";
 import {
+  contactIdentity,
+  unpaidCapacity,
+  unpaidLimits,
+  unpaidOutstanding,
+} from "@/domain/checkout-limits";
+import {
   promotionEligibleSubtotal,
   promotionTotals,
   promotionUsable,
@@ -38,10 +44,39 @@ export const digest = (value: string) =>
 export class CheckoutFailure extends Error {
   constructor(
     readonly code:
-      "STOCK" | "PROMO" | "DELIVERY" | "CONFLICT" | "LIMIT" | "DISABLED",
+      | "STOCK"
+      | "PROMO"
+      | "DELIVERY"
+      | "CONFLICT"
+      | "LIMIT"
+      | "DISABLED"
+      | "UNPAID",
+    /** Which unpaid-order limit refused it, for the log only. */
+    readonly detail?: "outstanding" | "contact",
   ) {
     super(code);
   }
+}
+/**
+ * Unpaid orders still holding stock. Read outside the order transaction: a query
+ * inside it would lock every unpaid order against staff edits, and the limit only
+ * needs to be roughly right, not serialised. Equality filters only, so Firestore
+ * serves it by merging single-field indexes and no composite index is needed.
+ */
+async function outstandingUnpaid(db: FirebaseFirestore.Firestore) {
+  const snapshot = await orderCollection(db)
+    .where("payment.method", "==", "iban")
+    .where("payment.status", "==", "pending")
+    .where("inventoryState", "==", "consumed")
+    .select("status", "totalMinor")
+    .limit(200)
+    .get();
+  return unpaidOutstanding(
+    snapshot.docs.map((doc) => ({
+      status: doc.get("status"),
+      totalMinor: doc.get("totalMinor"),
+    })),
+  );
 }
 export type OrderInput = {
   contact: CheckoutInput;
@@ -77,7 +112,14 @@ export async function createOrder(
     process.env.CATALOG_SOURCE !== "firestore"
   )
     throw new CheckoutFailure("DISABLED");
-  if (input.contact.payment === "online") assertMonoReady();
+  const online = input.contact.payment === "online";
+  if (online) assertMonoReady();
+  // Cheapest refusal first: before the carrier lookup and the transaction.
+  if (
+    !online &&
+    !unpaidCapacity(await outstandingUnpaid(db), input.expectedTotalMinor)
+  )
+    throw new CheckoutFailure("UNPAID", "outstanding");
   const delivery = await resolveDelivery(input.contact);
   if (!delivery) throw new CheckoutFailure("DELIVERY");
   const publicProducts = await freshCaviar(input.locale);
@@ -100,6 +142,14 @@ export async function createOrder(
     .collection(`checkoutLimits`)
     .doc(digest(`${address}:${Math.floor(now / 3600000)}`));
   const email = input.contact.email.trim().toLowerCase();
+  const contactRefs = online
+    ? []
+    : [`email:${contactIdentity(email)}`, `phone:${input.contact.phone}`].map(
+        (contact) =>
+          db
+            .collection("checkoutLimits")
+            .doc(digest(`unpaid:${contact}:${kyivDate()}`)),
+      );
   return db.runTransaction(async (tx) => {
     const existing = orderData(await tx.get(ref));
     if (existing) {
@@ -159,6 +209,16 @@ export async function createOrder(
     const budget = await tx.get(budgetRef);
     if (Number(budget.get("count") ?? 0) >= 10)
       throw new CheckoutFailure("LIMIT");
+    // Per mailbox and per phone: stops one address being flooded with order
+    // letters. A script inventing contacts passes this and meets the shop-wide
+    // limit above instead.
+    const contactCounts = contactRefs.length
+      ? (await tx.getAll(...contactRefs)).map((snap) =>
+          Number(snap.get("count") ?? 0),
+        )
+      : [];
+    if (contactCounts.some((count) => count >= unpaidLimits.perContactDaily))
+      throw new CheckoutFailure("UNPAID", "contact");
     const matches = await tx.get(
       db
         .collection("customers")
@@ -186,7 +246,6 @@ export async function createOrder(
       sources: customerBefore?.sources ?? [],
       lastInteractionAt: now,
     };
-    const online = input.contact.payment === "online";
     const order: Order = {
       id,
       number: `CB-${new Date(now).toISOString().slice(0, 10).replaceAll("-", "")}-${id.slice(0, 8).toUpperCase()}`,
@@ -358,6 +417,12 @@ export async function createOrder(
       count: Number(budget.get("count") ?? 0) + 1,
       expiresAt: now + 7200000,
     });
+    contactRefs.forEach((limitRef, index) =>
+      tx.set(limitRef, {
+        count: contactCounts[index]! + 1,
+        expiresAt: now + 2 * 86400000,
+      }),
+    );
     if (!online)
       tx.create(ref.collection("notifications").doc("created"), {
         state: "pending",

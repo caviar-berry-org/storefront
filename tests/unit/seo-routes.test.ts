@@ -68,7 +68,13 @@ test("robots names the assistants that cite sources and keeps staff paths closed
     "Google-Extended",
   ])
     assert.ok(agents.includes(bot), `missing directive for ${bot}`);
-  for (const rule of rules) {
+  // Yandex is shut out entirely; the wildcard would otherwise admit it.
+  assert.deepEqual(
+    rules.find((rule) => rule.userAgent === "Yandex"),
+    { userAgent: "Yandex", disallow: "/" },
+  );
+  assert.ok(!agents.includes("YandexBot"));
+  for (const rule of rules.filter((rule) => rule.userAgent !== "Yandex")) {
     assert.equal(rule.allow, "/");
     assert.deepEqual(rule.disallow, ["/api/", "/admin/", "/sign-in"]);
   }

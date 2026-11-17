@@ -35,6 +35,20 @@ export async function deliverCustomerNotifications(
       const order = await db.runTransaction(async (tx) => {
         const data = await tx.get(notification);
         const order = orderData(await tx.get(ref));
+        // A cancelled order owes nothing and confirms nothing. Without this a
+        // 'created' letter still queued when staff cancel reaches the buyer
+        // later as payment instructions for an order that no longer exists —
+        // the shipment letter already refuses one. Suppressed rather than
+        // skipped, so the daily reconciliation sweep stops carrying it forever.
+        if (
+          order?.status === "cancelled" &&
+          data.exists &&
+          ["pending", "failed"].includes(data.get("state"))
+        ) {
+          tx.update(notification, { state: "suppressed" });
+          tx.update(ref, { [`mail.${kind}`]: "suppressed" });
+          return "suppressed" as const;
+        }
         if (
           !order?.customer.email ||
           (order.payment.method === "online" &&
@@ -60,6 +74,10 @@ export async function deliverCustomerNotifications(
         tx.update(ref, { [`mail.${kind}`]: "sending" });
         return order;
       });
+      if (order === "suppressed") {
+        logCommerce("warn", "mail.suppressed", { order: id, kind });
+        continue;
+      }
       if (!order) continue;
       try {
         await sendMail(
