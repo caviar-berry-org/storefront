@@ -27,6 +27,19 @@ const config: NextConfig = {
   // Firestore's REST serializer relies on native protobuf/Long constructor names.
   serverExternalPackages: ["@google-cloud/firestore"],
   experimental: { globalNotFound: true },
+  /**
+   * The WordPress site served Ukrainian under `/uk`; this one uses `/ua`.
+   * Without these, every Ukrainian address Google indexed over the years dies
+   * as a 404 and its weight is lost — the English side was spared only because
+   * `/en` happened to match. Declared here rather than in the proxy so the edge
+   * answers them without waking a function.
+   */
+  redirects() {
+    return [
+      { source: "/uk", destination: "/ua", permanent: true },
+      { source: "/uk/:path*", destination: "/ua/:path*", permanent: true },
+    ];
+  },
   images: {
     // Measured across the storefront at 1920/2x: the browser only ever asks for
     // 384, 828, 1080 and 1920. Every extra candidate is one more variant that
