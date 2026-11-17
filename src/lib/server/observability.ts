@@ -1,5 +1,8 @@
 import "server-only";
 
+import { after } from "next/server";
+import { notify } from "./notify/telegram";
+
 /**
  * Critical commerce events, logged as one greppable line each. The vocabulary is
  * closed on purpose: these are the moments where money, stock or a customer
@@ -38,19 +41,42 @@ export function logSafeValue(value: unknown): string | number | boolean | null {
   return text;
 }
 
+/**
+ * Warnings worth waking a human for. Everything at `error` level already is;
+ * these mean someone is probing the shop rather than buying from it. A contact
+ * over its own daily allowance is routine and stays quiet.
+ */
+const alertedWarnings = new Set<CommerceEvent>(["checkout.limited"]);
+
+/**
+ * Hands the alert to `after` so it runs once the response is out. Nesting is
+ * supported, so a call from inside another `after` (mail jobs, reconciliation)
+ * is fine. Outside a request — scripts and tests — there is no scheduler, and
+ * an unconfigured sink returns before touching the network.
+ */
+function alertOperator(event: CommerceEvent, fields: Record<string, unknown>) {
+  const work = () => notify("error", event, fields);
+  try {
+    after(work);
+  } catch {
+    void work();
+  }
+}
+
 export function logCommerce(
   level: "error" | "warn",
   event: CommerceEvent,
   fields: Record<string, unknown> = {},
 ) {
-  const line = `[commerce] ${JSON.stringify({
-    event,
-    ...Object.fromEntries(
-      Object.entries(fields).map(([key, value]) => [key, logSafeValue(value)]),
-    ),
-  })}`;
+  const safe = Object.fromEntries(
+    Object.entries(fields).map(([key, value]) => [key, logSafeValue(value)]),
+  );
+  const line = `[commerce] ${JSON.stringify({ event, ...safe })}`;
   if (level === "error") console.error(line);
   else console.warn(line);
+  // The log is the record; the chat is only the nudge to come and read it.
+  if (level === "error" || alertedWarnings.has(event))
+    alertOperator(event, safe);
 }
 
 /**

@@ -1,4 +1,5 @@
 import { after } from "next/server";
+import { notify } from "@/lib/server/notify/telegram";
 import { cookies } from "next/headers";
 import { attributionCookie, readAttribution } from "@/domain/attribution";
 import { deliverMailJobs } from "@/lib/server/mail/jobs";
@@ -125,7 +126,19 @@ export async function POST(request: Request) {
       readAttribution((await cookies()).get(attributionCookie)?.value) ??
         undefined,
     );
-    after(() => deliverMailJobs());
+    after(async () => {
+      await Promise.allSettled([
+        deliverMailJobs(),
+        // The subject and kind say what it is; the name and contact stay in
+        // the admin, where they are protected.
+        notify(
+          "submission",
+          subject,
+          { Тип: kind },
+          { throttleKey: requestId },
+        ),
+      ]);
+    });
     return Response.json(
       { accepted: true },
       { headers: { "Cache-Control": "no-store" } },
