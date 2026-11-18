@@ -147,6 +147,11 @@ test("questions, crumbs and gifts describe only what the page really offers", ()
   const serialized = JSON.stringify(gifts);
   assert.ok(!serialized.includes("Offer"));
   assert.ok(!serialized.includes("price"));
+  // Nor a Product: Google requires an offer on every one, and rightly so —
+  // these are assembled on request, so there is nothing to put a price on.
+  assert.ok(!serialized.includes("Product"), serialized);
+  const first = (gifts.itemListElement as Record<string, unknown>[])[0]!;
+  assert.equal(first.name, "Дегустаційний набір");
 });
 
 test("a catalogue description cannot close the script tag it travels in", () => {

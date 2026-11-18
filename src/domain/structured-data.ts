@@ -190,16 +190,15 @@ export function giftListSchema(input: {
     name: input.name,
     url: absolute(input.origin, input.path),
     numberOfItems: input.gifts.length,
+    // Listed, not sold: a manager assembles each set after a request, so there
+    // is no price and no stock to offer. Calling them `Product` made Google
+    // demand `offers` and mark all nine entries invalid — and it was right to,
+    // because a product snippet promises something you can buy.
     itemListElement: input.gifts.map((gift, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      item: {
-        "@type": "Product",
-        name: gift.name,
-        sku: gift.key,
-        ...(gift.image && { image: absolute(input.origin, gift.image) }),
-        brand: { "@type": "Brand", name: "Ukrainian Caviar Berry" },
-      },
+      name: gift.name,
+      ...(gift.image && { image: absolute(input.origin, gift.image) }),
     })),
   };
 }
