@@ -28,16 +28,24 @@ const config: NextConfig = {
   serverExternalPackages: ["@google-cloud/firestore"],
   experimental: { globalNotFound: true },
   /**
-   * The WordPress site served Ukrainian under `/uk`; this one uses `/ua`.
-   * Without these, every Ukrainian address Google indexed over the years dies
-   * as a 404 and its weight is lost — the English side was spared only because
-   * `/en` happened to match. Declared here rather than in the proxy so the edge
-   * answers them without waking a function.
+   * The WordPress site served Ukrainian under `/uk` and Russian under `/ru`;
+   * this one has `/ua` and `/en`. Ten of the twelve clicks Search still sends
+   * us land on those old addresses, so without this they land on nothing.
+   *
+   * Everything goes to the home page rather than a guessed equivalent. The old
+   * paths share no structure with the new ones, so a per-page map would be a
+   * growing list of special cases that still misses whatever turns up next in
+   * Search Console. These two lines cover the whole of both old locales and
+   * never need touching again.
+   *
+   * The trade-off, stated plainly: Google reads a redirect to an unrelated page
+   * as a soft 404 and drops the URL. It would drop a plain 404 just the same —
+   * the difference is that this way a visitor still arrives somewhere.
    */
   redirects() {
     return [
-      { source: "/uk", destination: "/ua", permanent: true },
-      { source: "/uk/:path*", destination: "/ua/:path*", permanent: true },
+      { source: "/:locale(uk|ru)", destination: "/ua", permanent: true },
+      { source: "/:locale(uk|ru)/:path*", destination: "/ua", permanent: true },
     ];
   },
   images: {
