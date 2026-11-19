@@ -15,6 +15,8 @@ import { writeCatalogRecord, writeInventory } from "../catalog/projection";
 import { promotionBook } from "../promotions/storage";
 import { createMonoInvoice, monoInvoiceStatus } from "../payments/mono";
 import { errorLabel, logCommerce } from "../observability";
+import { notify } from "../notify/telegram";
+import { ownerTicket } from "../notify/ticket";
 
 /**
  * A payment that can never match this order: the amount, currency or invoice
@@ -108,6 +110,13 @@ export async function applyPayment(invoice: MonoInvoice) {
         inventory: applied.order.inventoryState,
       },
     );
+  if (applied.announced)
+    void notify(
+      "order",
+      applied.order.number,
+      ownerTicket(ownerOrderFields(applied.order)),
+      { throttleKey: `${applied.order.id}-paid`, disclose: true },
+    );
   return applied.order;
 }
 
@@ -146,7 +155,7 @@ async function applyPaymentTransaction(invoice: MonoInvoice) {
       order.payment.modifiedAt ?? 0,
       invoice,
     );
-    if (!next) return { order, changed: false };
+    if (!next) return { order, changed: false, announced: false };
     const changesInventory =
       order.inventoryState === "reserved" &&
       (next === "paid" || next === "failed" || next === "refunded");
@@ -166,7 +175,8 @@ async function applyPaymentTransaction(invoice: MonoInvoice) {
     const promo = promoRef ? await tx.get(promoRef) : null;
     const eventId = `mono-${invoice.invoiceId}-${Date.parse(invoice.modifiedDate)}-${invoice.status}`;
     const eventRef = ref.collection("activity").doc(eventId);
-    if ((await tx.get(eventRef)).exists) return { order, changed: false };
+    if ((await tx.get(eventRef)).exists)
+      return { order, changed: false, announced: false };
     const paidMail =
       next === "paid"
         ? await tx.get(ref.collection("notifications").doc("paid"))
@@ -296,7 +306,12 @@ async function applyPaymentTransaction(invoice: MonoInvoice) {
         state: "pending",
         at: now,
       });
-    return { order: updated, changed: true };
+    // `announced` is the condition that queued the staff letter above.
+    return {
+      order: updated,
+      changed: true,
+      announced: next === "paid" && !paidMail?.exists,
+    };
   });
 }
 export async function reconcileOrder(order: Order) {

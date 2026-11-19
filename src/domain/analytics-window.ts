@@ -84,6 +84,7 @@ export function analyticsWindow(
   };
 }
 
+/** `total` is money received, not money ordered. */
 export type ChannelRow = { source: string; count: number; total: number };
 
 export type ChannelShare = ChannelRow & { share: number };

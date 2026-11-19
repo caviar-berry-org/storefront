@@ -1,5 +1,6 @@
 import { after } from "next/server";
 import { notify } from "@/lib/server/notify/telegram";
+import { inquiryTypeLabel, ownerTicket } from "@/lib/server/notify/ticket";
 import { cookies } from "next/headers";
 import { attributionCookie, readAttribution } from "@/domain/attribution";
 import { deliverMailJobs } from "@/lib/server/mail/jobs";
@@ -107,7 +108,7 @@ export async function POST(request: Request) {
         );
     }
     const fields = input.data as unknown as InquiryInput;
-    await saveInquiry(
+    const ticket = await saveInquiry(
       {
         kind,
         locale:
@@ -129,14 +130,22 @@ export async function POST(request: Request) {
     after(async () => {
       await Promise.allSettled([
         deliverMailJobs(),
-        // The subject and kind say what it is; the name and contact stay in
-        // the admin, where they are protected.
-        notify(
-          "submission",
-          subject,
-          { Тип: kind },
-          { throttleKey: requestId },
-        ),
+        // Only the forms the staff mailbox is told about; a restock request
+        // waits in the admin instead.
+        kind === "notify"
+          ? Promise.resolve(false)
+          : notify(
+              "submission",
+              subject,
+              {
+                Тип: inquiryTypeLabel(
+                  kind,
+                  typeof targetId === "string" ? targetId : undefined,
+                ),
+                ...ownerTicket(ticket),
+              },
+              { throttleKey: requestId, disclose: true },
+            ),
       ]);
     });
     return Response.json(

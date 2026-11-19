@@ -148,7 +148,7 @@ async function inRounds<T>(jobs: readonly (() => Promise<T>)[], size: number) {
 }
 
 /**
- * Orders and revenue per acquisition channel over one reporting window.
+ * Orders and received money per acquisition channel over one reporting window.
  *
  * One count-and-sum aggregation per source rather than a scan: an aggregation
  * bills a fraction of the documents it covers, so the cost stays flat as the
@@ -160,16 +160,23 @@ const channelOrders = unstable_cache(
     // One source failing must not blank the whole panel.
     const results = await Promise.allSettled(
       utmSources.map(async (source) => {
-        const result = await orderCollection()
+        const window = orderCollection()
           .where("attribution.source", "==", source)
           .where("createdAt", ">=", from)
-          .where("createdAt", "<", to)
-          .aggregate({
-            count: AggregateField.count(),
-            total: AggregateField.sum("totalMinor"),
-          })
-          .get();
-        return { source, ...result.data() };
+          .where("createdAt", "<", to);
+        // Counted: every tagged order. Credited: only payments that arrived.
+        const [placed, received] = await Promise.all([
+          window.aggregate({ count: AggregateField.count() }).get(),
+          window
+            .where("payment.status", "==", "paid")
+            .aggregate({ total: AggregateField.sum("totalMinor") })
+            .get(),
+        ]);
+        return {
+          source,
+          count: placed.data().count,
+          total: received.data().total,
+        };
       }),
     );
     const failure = results.find((result) => result.status === "rejected");
@@ -198,7 +205,8 @@ const channelOrders = unstable_cache(
     };
   },
   [
-    "staff-dashboard-channels-v2",
+    // v3: the money column counts received payments, not placed orders.
+    "staff-dashboard-channels-v3",
     process.env.APP_ENV ?? "",
     process.env.FIREBASE_PROJECT_ID ?? "",
   ],
