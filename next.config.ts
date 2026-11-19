@@ -20,6 +20,61 @@ const replacedPhotos = {
   "set-premium.jpg": "gifts/premium.webp",
 } as const;
 
+/**
+ * Old WordPress addresses, which still hold nearly all of what Search knows
+ * about the shop, mapped to the pages that replaced them. A redirect to an
+ * unrelated page is a soft 404 and loses the ranking, so each goes to its real
+ * equivalent; `#` targets are home-page sections. English is enumerated, never
+ * wildcarded — `/en/*` is the live storefront.
+ */
+const movedPages: { uk?: string; ru?: string; en?: string; to: string }[] = [
+  {
+    uk: "vidi-rib",
+    ru: "vidy-ryby",
+    en: "types-of-fish-2",
+    to: "/journal/sturgeon-species",
+  },
+  { uk: "pro-nas", ru: "o-nas", en: "about-us", to: "#about" },
+  {
+    // The 2016 story is published in the blog section's company archive.
+    uk: "azovskij-oseter-povertayetsya-dodomu",
+    ru: "azovskij-osetr-vozvrashhaetsya-domoj",
+    en: "azov-sturgeon-return-home",
+    to: "#blog",
+  },
+  {
+    uk: "istoriya-smaku",
+    ru: "istoriya-vkusa",
+    en: "history-of-taste",
+    to: "#history",
+  },
+  { uk: "kontakti", ru: "kontakty", to: "#contacts" },
+  {
+    uk: "produktsiya",
+    ru: "produktsiya-kompanii-ukrainian-caviar-berry",
+    en: "products",
+    to: "#ikra",
+  },
+  {
+    // Bester is HUSO HUSO × A. RUTHENUS — the species `hybrid` sells.
+    uk: "produktsiya/ikra-bestera",
+    ru: "produktsiya-kompanii-ukrainian-caviar-berry/ikra-bestera",
+    en: "products/caviar-of-bester",
+    to: "/products/hybrid",
+  },
+  {
+    // `premium` is the only pack carrying A. gueldenstaedtii.
+    uk: "produktsiya/ikra-rosijskogo-osetra",
+    ru: "produktsiya-kompanii-ukrainian-caviar-berry/ikra-russkogo-osetra",
+    en: "products/caviar-of-russian-sturgeon",
+    to: "/products/premium",
+  },
+  {
+    ru: "firmennaya-upakovka-ot-ukrainian-caviar-berry",
+    to: "/journal/packing-and-delivery",
+  },
+];
+
 const config: NextConfig = {
   poweredByHeader: false,
   // Bundle Firebase Admin so its CommonJS dependencies can load ESM on Vercel.
@@ -27,23 +82,16 @@ const config: NextConfig = {
   // Firestore's REST serializer relies on native protobuf/Long constructor names.
   serverExternalPackages: ["@google-cloud/firestore"],
   experimental: { globalNotFound: true },
-  /**
-   * The WordPress site served Ukrainian under `/uk` and Russian under `/ru`;
-   * this one has `/ua` and `/en`. Ten of the twelve clicks Search still sends
-   * us land on those old addresses, so without this they land on nothing.
-   *
-   * Everything goes to the home page rather than a guessed equivalent. The old
-   * paths share no structure with the new ones, so a per-page map would be a
-   * growing list of special cases that still misses whatever turns up next in
-   * Search Console. These two lines cover the whole of both old locales and
-   * never need touching again.
-   *
-   * The trade-off, stated plainly: Google reads a redirect to an unrelated page
-   * as a soft 404 and drops the URL. It would drop a plain 404 just the same —
-   * the difference is that this way a visitor still arrives somewhere.
-   */
   redirects() {
+    const moved = movedPages.flatMap(({ uk, ru, en, to }) => [
+      ...(uk ? [{ source: `/uk/${uk}`, destination: `/ua${to}` }] : []),
+      ...(ru ? [{ source: `/ru/${ru}`, destination: `/ua${to}` }] : []),
+      // English keeps its own locale.
+      ...(en ? [{ source: `/en/${en}`, destination: `/en${to}` }] : []),
+    ]);
     return [
+      ...moved.map((rule) => ({ ...rule, permanent: true })),
+      // Everything else those locales served. Last, so the named pages win.
       { source: "/:locale(uk|ru)", destination: "/ua", permanent: true },
       { source: "/:locale(uk|ru)/:path*", destination: "/ua", permanent: true },
     ];

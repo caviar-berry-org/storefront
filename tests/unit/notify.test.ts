@@ -24,6 +24,47 @@ test("values are bounded so one long error cannot fill the chat", () => {
   assert.equal(telegram.redact(null), "");
 });
 
+test("a disclosed ticket carries the contact and the customer's own words", async () => {
+  process.env.TELEGRAM_BOT_TOKEN = "test-token";
+  process.env.TELEGRAM_CHAT_ID = "-100123";
+  const guard = globalThis.fetch;
+  let body = "";
+  globalThis.fetch = (async (_url: string, init: RequestInit) => {
+    body = JSON.parse(String(init.body)).text;
+    return { ok: true } as Response;
+  }) as unknown as typeof fetch;
+  try {
+    await telegram.notify(
+      "submission",
+      "Написати нам",
+      {
+        Контакт: "anna.k@example.com",
+        Телефон: "+380 (99) 143-56-79",
+        Товари: "Преміум, 50 г × 1\nСтерлядь, 100 г × 2",
+      },
+      { throttleKey: "ticket-disclosed", disclose: true },
+    );
+    assert.match(body, /anna\.k@example\.com/);
+    assert.match(body, /\+380 \(99\) 143-56-79/);
+    assert.match(body, /<b>Товари:<\/b>\nПреміум/);
+
+    // The same fields without the opt-in stay redacted.
+    await telegram.notify(
+      "error",
+      "checkout.unavailable",
+      { Контакт: "anna.k@example.com", Телефон: "+380 (99) 143-56-79" },
+      { throttleKey: "ticket-redacted" },
+    );
+    assert.doesNotMatch(body, /anna\.k@example\.com/);
+    assert.match(body, /\[email\]/);
+    assert.match(body, /\[number\]/);
+  } finally {
+    globalThis.fetch = guard;
+    delete process.env.TELEGRAM_BOT_TOKEN;
+    delete process.env.TELEGRAM_CHAT_ID;
+  }
+});
+
 test("without both variables the sink stays silent and never reaches the network", async () => {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chat = process.env.TELEGRAM_CHAT_ID;

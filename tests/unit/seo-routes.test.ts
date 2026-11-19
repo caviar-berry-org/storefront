@@ -195,3 +195,80 @@ test("every journal article describes itself with a sentence, not its heading", 
     }
   }
 });
+
+test("every old address Search still holds lands on its real equivalent", async () => {
+  // A rule that drifts from this table throws away a ranking page; a rule that
+  // shadows a live path breaks the storefront.
+  const { default: config } = await import("../../next.config.ts");
+  const rules = (await config.redirects!()) as {
+    source: string;
+    destination: string;
+    permanent: boolean;
+  }[];
+  const resolve = (path: string) => {
+    for (const rule of rules) {
+      if (rule.source === path) return rule.destination;
+      const blanket = /^\/:locale\(uk\|ru\)(\/:path\*)?$/.exec(rule.source);
+      if (blanket) {
+        const segments = path.split("/").filter(Boolean);
+        if (
+          ["uk", "ru"].includes(segments[0] ?? "") &&
+          (blanket[1] ? segments.length > 1 : segments.length === 1)
+        )
+          return rule.destination;
+      }
+    }
+    return null;
+  };
+
+  for (const [from, to] of [
+    ["/uk/vidi-rib", "/ua/journal/sturgeon-species"],
+    ["/ru/vidy-ryby", "/ua/journal/sturgeon-species"],
+    ["/en/types-of-fish-2", "/en/journal/sturgeon-species"],
+    ["/uk/pro-nas", "/ua#about"],
+    ["/en/about-us", "/en#about"],
+    ["/ru/kontakty", "/ua#contacts"],
+    ["/en/products", "/en#ikra"],
+    ["/uk/produktsiya/ikra-bestera", "/ua/products/hybrid"],
+    ["/en/products/caviar-of-bester", "/en/products/hybrid"],
+    ["/en/products/caviar-of-russian-sturgeon", "/en/products/premium"],
+    // Published in the home page's blog archive.
+    ["/ru/azovskij-osetr-vozvrashhaetsya-domoj", "/ua#blog"],
+    ["/en/azov-sturgeon-return-home", "/en#blog"],
+    // Everything else still arrives somewhere.
+    ["/uk/anything-we-never-listed", "/ua"],
+    ["/ru", "/ua"],
+  ] as const)
+    assert.equal(resolve(from), to, from);
+
+  // A pattern under `/en` would redirect the live storefront over itself.
+  for (const rule of rules)
+    if (rule.source.startsWith("/en"))
+      assert.doesNotMatch(
+        rule.source,
+        /[:*]/,
+        `an English rule may not be a pattern: ${rule.source}`,
+      );
+  assert.equal(resolve("/en/never-existed"), null);
+
+  // No rule may send traffic to a path another rule takes away.
+  const destinations = new Set(
+    rules.map((rule) => rule.destination.split("#")[0]),
+  );
+  for (const rule of rules)
+    assert.ok(
+      !destinations.has(rule.source),
+      `${rule.source} is both a redirect source and a destination`,
+    );
+
+  for (const rule of rules) {
+    assert.equal(rule.permanent, true, rule.source);
+    if (rule.source.startsWith("/en/"))
+      assert.ok(rule.destination.startsWith("/en"), rule.source);
+  }
+  // The catch-alls stay last, or they swallow the named pages.
+  assert.deepEqual(
+    rules.slice(-2).map((rule) => rule.source),
+    ["/:locale(uk|ru)", "/:locale(uk|ru)/:path*"],
+  );
+});

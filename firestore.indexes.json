@@ -433,6 +433,28 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "orders",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "attribution.source",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "payment.status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "totalMinor",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": [

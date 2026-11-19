@@ -7,8 +7,10 @@ import "server-only";
  * Three rules this file exists to keep:
  *  - it never breaks a request. Every failure is swallowed; a dead bot token
  *    must not cost a customer their checkout;
- *  - it never carries personal data. Addresses, phones and names stay in
- *    Firestore, where they are protected; a chat is not that place;
+ *  - crash and error alerts carry no personal data: their text is written by
+ *    whoever threw it. Order and submission tickets are the exception — the
+ *    chat is staff-only and an operator needs the whole ticket. Opt in with
+ *    `disclose`; the default redacts;
  *  - it never floods. A crash loop would otherwise post until Telegram rate
  *    limits us and the real signal is buried.
  *
@@ -37,6 +39,8 @@ const heading: Record<NotifyCategory, string> = {
 /** Telegram rejects anything longer; leave room for the heading and fields. */
 const messageLimit = 3500;
 const valueLimit = 300;
+/** A disclosed ticket quotes the customer's own words, so it is given room. */
+const discloseLimit = 1000;
 
 const emailPattern = /[^\s@,;<>()]+@[^\s@,;<>()]+\.[^\s@,;<>()]+/g;
 /**
@@ -102,7 +106,7 @@ export async function notify(
   category: NotifyCategory,
   title: string,
   fields: NotifyFields = {},
-  options: { throttleKey?: string } = {},
+  options: { throttleKey?: string; disclose?: boolean } = {},
 ): Promise<boolean> {
   const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
   const chat = process.env.TELEGRAM_CHAT_ID?.trim();
@@ -111,21 +115,23 @@ export async function notify(
   const key = `${category}:${options.throttleKey ?? title}`;
   if (throttled(key, Date.now())) return false;
 
+  const show = (value: unknown) =>
+    options.disclose
+      ? escapeHtml(String(value ?? "")).slice(0, discloseLimit)
+      : escapeHtml(redact(value));
   const lines = Object.entries(fields)
     .filter(
       ([, value]) => value !== undefined && value !== null && value !== "",
     )
-    .map(
-      ([name, value]) =>
-        `<b>${escapeHtml(name)}:</b> ${escapeHtml(redact(value))}`,
-    );
+    .map(([name, value]) => {
+      // A multi-line value — items, an address — keeps its lines.
+      const text = show(value);
+      return `<b>${escapeHtml(name)}:</b>${text.includes("\n") ? "\n" : " "}${text}`;
+    });
   // Production and DEV share one chat on purpose — two chats mean two places to
   // forget to look. The marker is what keeps a DEV crash from reading as a real one.
   const environment = process.env.APP_ENV === "production" ? "" : " [DEV]";
-  const text = [
-    `${heading[category]}${environment} · ${escapeHtml(redact(title))}`,
-    ...lines,
-  ]
+  const text = [`${heading[category]}${environment} · ${show(title)}`, ...lines]
     .join("\n")
     .slice(0, messageLimit);
 

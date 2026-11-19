@@ -27,7 +27,7 @@ async function countSince(since: number) {
   const [orders, inquiries] = await Promise.all([
     orderCollection(db)
       .where("createdAt", ">=", since)
-      .select("status", "totalMinor")
+      .select("status", "totalMinor", "payment.status")
       .limit(scanLimit)
       .get(),
     db
@@ -39,17 +39,26 @@ async function countSince(since: number) {
   ]);
   const byStatus = new Map<string, number>();
   let revenueMinor = 0;
+  let awaitedMinor = 0;
+  let awaited = 0;
   for (const doc of orders.docs) {
     const status = String(doc.get("status") ?? "new");
     byStatus.set(status, (byStatus.get(status) ?? 0) + 1);
-    // A cancelled order never became money, so it must not inflate the figure.
-    if (status !== "cancelled")
-      revenueMinor += Number(doc.get("totalMinor")) || 0;
+    const total = Number(doc.get("totalMinor")) || 0;
+    // Money that arrived, and nothing else: a placed order is not revenue.
+    // Cancelled belongs to neither figure — it happened, and it is over.
+    if (doc.get("payment.status") === "paid") revenueMinor += total;
+    else if (status !== "cancelled") {
+      awaited++;
+      awaitedMinor += total;
+    }
   }
   return {
     orders: orders.docs.length,
     inquiries: inquiries.docs.length,
     revenueMinor,
+    awaited,
+    awaitedMinor,
     byStatus,
     truncated:
       orders.docs.length >= scanLimit || inquiries.docs.length >= scanLimit,
@@ -71,7 +80,10 @@ export async function sendDigest(
     title,
     {
       Замовлень: counted.orders,
-      Сума: formatMoney(counted.revenueMinor, "ua"),
+      Оплачено: formatMoney(counted.revenueMinor, "ua"),
+      ...(counted.awaited && {
+        "Очікує оплати": `${counted.awaited} на ${formatMoney(counted.awaitedMinor, "ua")}`,
+      }),
       Статуси: breakdown,
       Заявок: counted.inquiries,
       ...(counted.truncated && {

@@ -26,6 +26,8 @@ import {
 import { ensureInvoice } from "@/lib/server/checkout/payment";
 import { errorLabel, logCommerce } from "@/lib/server/observability";
 import { notify } from "@/lib/server/notify/telegram";
+import { ownerTicket } from "@/lib/server/notify/ticket";
+import { ownerOrderFields } from "@/lib/server/mail/templates";
 import { deliverOrderNotifications } from "@/lib/server/orders/notifications";
 import {
   formError,
@@ -154,25 +156,20 @@ export async function POST(request: Request) {
       await Promise.allSettled([
         deliverOrderNotifications(order.id),
         deliverMailJobs(),
-        // After the transaction, never inside it: a retried transaction body
-        // would announce the same order twice.
-        notify(
-          "order",
-          order.number,
-          {
-            Сума: formatMoney(order.totalMinor, locale),
-            Оплата:
-              order.type === "online"
-                ? "картка"
-                : order.type === "corporate"
-                  ? "рахунок"
-                  : "реквізити",
-            Позицій: order.lines.length,
-            Мова: locale,
-          },
-          // Every order is its own news, so nothing is throttled away.
-          { throttleKey: order.id },
-        ),
+        // After the transaction: a retry would announce it twice. A card
+        // order is announced from `applyPayment`, once the money is there.
+        order.payment.method === "online"
+          ? Promise.resolve(false)
+          : notify(
+              "order",
+              order.number,
+              ownerTicket(ownerOrderFields(order)),
+              {
+                // Every order is its own news, so nothing is throttled away.
+                throttleKey: order.id,
+                disclose: true,
+              },
+            ),
       ]);
     });
     const payable = await ensureInvoice(order);

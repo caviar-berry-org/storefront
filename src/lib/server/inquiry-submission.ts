@@ -45,6 +45,22 @@ export async function saveInquiry(
     "all",
     email ? `email:${email}` : `phone:${phone!.replace(/\D/g, "")}`,
   );
+  // One record for the staff email and the chat ticket; built outside the
+  // transaction, which can be retried.
+  const ownerFields = {
+    id: requestId,
+    createdAt: new Date(now).toLocaleString("uk-UA", {
+      timeZone: "Europe/Kyiv",
+    }),
+    name: input.name,
+    contact,
+    subject: input.subject,
+    targetId: input.targetId ?? "",
+    variantId: input.variantId ?? "",
+    date: input.date,
+    comment: input.comment,
+    locale: input.locale ?? "ua",
+  };
   await db.runTransaction(async (tx) => {
     const existing = await tx.get(inquiry);
     if (existing.exists) {
@@ -103,20 +119,7 @@ export async function saveInquiry(
             ? "corporate"
             : "gift"
           : "write",
-        {
-          id: requestId,
-          createdAt: new Date(now).toLocaleString("uk-UA", {
-            timeZone: "Europe/Kyiv",
-          }),
-          name: input.name,
-          contact,
-          subject: input.subject,
-          targetId: input.targetId ?? "",
-          variantId: input.variantId ?? "",
-          date: input.date,
-          comment: input.comment,
-          locale: input.locale ?? "ua",
-        },
+        ownerFields,
         new URL(
           `/admin/inquiries/${input.kind === "write" ? "contact" : input.targetId === "corp" ? "corporate" : "gifts"}/${requestId}`,
           process.env.SITE_URL ?? "https://caviar.net.ua",
@@ -140,4 +143,5 @@ export async function saveInquiry(
       expiresAt: now + 7200000,
     });
   });
+  return ownerFields;
 }
