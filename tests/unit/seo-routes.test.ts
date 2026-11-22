@@ -104,7 +104,9 @@ test("the sitemap carries dates, language pairs and images, and never a hidden p
   assert.ok(urls.includes(`${origin}/en`));
   assert.ok(urls.includes(`${origin}/ua/products/sterlet`));
   assert.ok(urls.includes(`${origin}/ua/journal/serving-caviar`));
-  assert.ok(urls.includes(`${origin}/ua/offer`));
+  // The offer renders `noindex`, so listing it here would ask Search to index
+  // what the page itself refuses — Search Console reports the contradiction.
+  assert.ok(!urls.some((url) => url.endsWith("/offer")));
   // The catalogue query filters unpublished, archived and the test product; the
   // sitemap must take its list from there and add nothing of its own.
   assert.ok(!urls.some((url) => url.includes("checkout-test")));
