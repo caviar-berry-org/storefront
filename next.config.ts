@@ -48,7 +48,7 @@ const movedPages: { uk?: string; ru?: string; en?: string; to: string }[] = [
     en: "history-of-taste",
     to: "#history",
   },
-  { uk: "kontakti", ru: "kontakty", to: "#contacts" },
+  { uk: "kontakti", ru: "kontakty", en: "contacts", to: "#contacts" },
   {
     uk: "produktsiya",
     ru: "produktsiya-kompanii-ukrainian-caviar-berry",
@@ -70,8 +70,22 @@ const movedPages: { uk?: string; ru?: string; en?: string; to: string }[] = [
     to: "/products/premium",
   },
   {
+    uk: "firmove-pakovannya-vid-ukrainian-caviar-berry",
     ru: "firmennaya-upakovka-ot-ukrainian-caviar-berry",
     to: "/journal/packing-and-delivery",
+  },
+  {
+    // Annual grading of the broodstock — the blog section carries the 2020
+    // footage of exactly this.
+    uk: "shhorichne-bonituvannya-osetrovih",
+    ru: "ezhegodnaya-bonitirovka-osetrovyh",
+    en: "annual-sturgeon-grading",
+    to: "#blog",
+  },
+  {
+    // Only the English address reached Search; uk/ru fall to the wildcard.
+    en: "ukrainian-armed-forces-rescue-endangered-stock-of-russian-sturgeon",
+    to: "#blog",
   },
 ];
 

@@ -32,7 +32,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
       images: [article.image],
     })),
-    { path: "/offer", changeFrequency: "yearly", priority: 0.3 },
   ];
   // One timestamp per build: the storefront is statically generated, so a build
   // is exactly when its pages last changed.
