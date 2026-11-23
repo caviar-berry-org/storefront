@@ -183,24 +183,6 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "promotion.percent",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "discountMinor",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "orders",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        },
-        {
           "fieldPath": "discountMinor",
           "order": "ASCENDING"
         }
@@ -426,10 +408,6 @@
         },
         {
           "fieldPath": "createdAt",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "totalMinor",
           "order": "ASCENDING"
         }
       ]
