@@ -180,18 +180,9 @@ const channelOrders = unstable_cache(
       }),
     );
     const failure = results.find((result) => result.status === "rejected");
-    // The composite index is deployed separately from the app, so an admin
-    // opening this before `firebase deploy --only firestore:indexes` must be
-    // told that, not shown a generic outage.
-    if (failure && indexRequired(failure.reason))
-      return {
-        period,
-        rows: [],
-        orders: 0,
-        revenue: 0,
-        indexRequired: true as const,
-        at: Date.now(),
-      };
+    // Every failure leaves the cache empty, the missing index included: a
+    // rejected promise is not stored, so the next request asks Firestore again
+    // instead of replaying the failure for the rest of the cache window.
     if (failure) throw failure.reason;
     return {
       period,
@@ -225,6 +216,31 @@ export async function readChannelMetrics(period: AnalyticsPeriod) {
     );
     return { ...metrics, window };
   } catch (error) {
+    // The composite index is deployed separately from the app, so an admin
+    // opening this before `firebase deploy --only firestore:indexes` must be
+    // told that, not shown a generic outage. Answered outside the cached query
+    // on purpose: the banner then disappears on the first request after the
+    // index is ready, rather than outliving it by a whole cache window.
+    if (indexRequired(error)) {
+      // Logged as well, because the message names the index Firestore wants —
+      // the one fact that turns this banner into a one-line fix.
+      console.warn("[staff.dashboard]", {
+        query: "channels",
+        period,
+        indexRequired: true,
+        message:
+          error instanceof Error ? error.message.slice(0, 300) : undefined,
+      });
+      return {
+        period,
+        rows: [],
+        orders: 0,
+        revenue: 0,
+        indexRequired: true as const,
+        at: Date.now(),
+        window,
+      };
+    }
     // Name the error. A log that prints an empty object is the same as no log.
     console.error("[staff.dashboard]", {
       query: "channels",
