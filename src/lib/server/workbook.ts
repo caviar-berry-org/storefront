@@ -22,20 +22,53 @@ const xml = (value: unknown) =>
           "'": "&apos;",
         })[c]!,
     );
+export type WorkbookSheet = {
+  name: string;
+  rows: readonly (readonly unknown[])[];
+};
+
+/**
+ * A1-style column name. Charting a column off `String.fromCharCode(65 + n)`
+ * alone breaks at the 27th one, where Excel wants "AA" and gets "[".
+ */
+const column = (index: number) => {
+  let name = "";
+  for (let n = index; n >= 0; n = Math.floor(n / 26) - 1)
+    name = String.fromCharCode(65 + (n % 26)) + name;
+  return name;
+};
+
+const worksheet = (rows: readonly (readonly unknown[])[]) => {
+  const width = rows[0]?.length ?? 1;
+  return `<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols><col min="1" max="1" width="38" customWidth="1"/><col min="2" max="${width}" width="28" customWidth="1"/></cols><sheetData>${rows.map((row, i) => `<row r="${i + 1}">${row.map((value, j) => `<c r="${column(j)}${i + 1}" t="inlineStr"><is><t xml:space="preserve">${xml(value)}</t></is></c>`).join("")}</row>`).join("")}</sheetData><autoFilter ref="A1:${column(width - 1)}${Math.max(1, rows.length)}"/></worksheet>`;
+};
+
 export function workbook(
   rows: readonly (readonly unknown[])[],
   sheetName: string,
 ) {
-  const sheet = `<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols><col min="1" max="1" width="38" customWidth="1"/><col min="2" max="${rows[0]?.length ?? 1}" width="28" customWidth="1"/></cols><sheetData>${rows.map((row, i) => `<row r="${i + 1}">${row.map((value, j) => `<c r="${String.fromCharCode(65 + j)}${i + 1}" t="inlineStr"><is><t xml:space="preserve">${xml(value)}</t></is></c>`).join("")}</row>`).join("")}</sheetData><autoFilter ref="A1:${String.fromCharCode(64 + (rows[0]?.length ?? 1))}${Math.max(1, rows.length)}"/></worksheet>`;
+  return workbookSheets([{ name: sheetName, rows }]);
+}
+
+/**
+ * Several named sheets in one file. Sheet order is the order given; each sheet
+ * is its own part, related to the workbook by a matching rId.
+ */
+export function workbookSheets(sheets: readonly WorkbookSheet[]) {
+  const parts = sheets.map((sheet, index) => ({
+    ...sheet,
+    id: index + 1,
+    path: `worksheets/sheet${index + 1}.xml`,
+  }));
   const files: Record<string, string> = {
-    "[Content_Types].xml":
-      '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>',
+    "[Content_Types].xml": `<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>${parts.map(({ path }) => `<Override PartName="/xl/${path}" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`,
     "_rels/.rels":
       '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
-    "xl/workbook.xml": `<?xml version="1.0"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="${xml(sheetName.slice(0, 31))}" sheetId="1" r:id="rId1"/></sheets></workbook>`,
-    "xl/_rels/workbook.xml.rels":
-      '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>',
-    "xl/worksheets/sheet1.xml": sheet,
+    "xl/workbook.xml": `<?xml version="1.0"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${parts.map(({ name, id }) => `<sheet name="${xml(name.slice(0, 31))}" sheetId="${id}" r:id="rId${id}"/>`).join("")}</sheets></workbook>`,
+    "xl/_rels/workbook.xml.rels": `<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${parts.map(({ id, path }) => `<Relationship Id="rId${id}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="${path}"/>`).join("")}</Relationships>`,
+    ...Object.fromEntries(
+      parts.map(({ path, rows }) => [`xl/${path}`, worksheet(rows)]),
+    ),
   };
   const local: Buffer[] = [],
     central: Buffer[] = [];
