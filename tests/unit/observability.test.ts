@@ -238,3 +238,66 @@ test("reconciliation retries mail by state, so an old order is not left behind",
   // The shared queue is drained once per run, not once per order.
   assert.equal(queueDrains, 1);
 });
+
+/**
+ * Scanner probes die in Next's body decoding before any of our code runs. They
+ * must not reach the chat, and a real crash must still get there — a filter
+ * that quietly widens would take the alerting with it.
+ */
+function crashes() {
+  const sent: { title: string; fields: Record<string, unknown> }[] = [];
+  const { onRequestError } = serverModule<
+    typeof import("../../src/instrumentation.ts")
+  >("src/instrumentation.ts", {
+    [resolve("src/lib/server/notify/telegram.ts")]: {
+      notify: async (
+        _category: string,
+        title: string,
+        fields: Record<string, unknown>,
+      ) => {
+        sent.push({ title, fields });
+        return true;
+      },
+    },
+  });
+  return { sent, onRequestError };
+}
+
+const request = { path: "/index.php", method: "POST", headers: {} };
+const context = {
+  routerKind: "App Router",
+  routePath: "/[locale]/page",
+  routeType: "render",
+  revalidateReason: undefined,
+} as const;
+
+test("an unreadable request body never reaches the chat", async () => {
+  const { sent, onRequestError } = crashes();
+  const missingBoundary = new TypeError("Failed to parse body as FormData.", {
+    cause: new TypeError("missing boundary in content-type header"),
+  });
+  await onRequestError(missingBoundary, request, context);
+  await onRequestError(
+    new TypeError("Failed to parse body as URLSearchParams"),
+    request,
+    context,
+  );
+  // Only the cause names the boundary, as Next reports it on some paths.
+  await onRequestError(
+    new TypeError("Body already read", {
+      cause: new TypeError("no boundary found in multipart body"),
+    }),
+    request,
+    context,
+  );
+  assert.deepEqual(sent, []);
+});
+
+test("an ordinary crash still reports its route and message", async () => {
+  const { sent, onRequestError } = crashes();
+  await onRequestError(new Error("Firestore unavailable"), request, context);
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0]?.title, "/[locale]/page");
+  assert.equal(sent[0]?.fields.Помилка, "Firestore unavailable");
+  assert.equal(sent[0]?.fields.Запит, "POST /index.php");
+});

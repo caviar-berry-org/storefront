@@ -25,6 +25,7 @@ test("values are bounded so one long error cannot fill the chat", () => {
 });
 
 test("a disclosed ticket carries the contact and the customer's own words", async () => {
+  process.env.APP_ENV = "production";
   process.env.TELEGRAM_BOT_TOKEN = "test-token";
   process.env.TELEGRAM_CHAT_ID = "-100123";
   const guard = globalThis.fetch;
@@ -60,6 +61,7 @@ test("a disclosed ticket carries the contact and the customer's own words", asyn
     assert.match(body, /\[number\]/);
   } finally {
     globalThis.fetch = guard;
+    process.env.APP_ENV = "development";
     delete process.env.TELEGRAM_BOT_TOKEN;
     delete process.env.TELEGRAM_CHAT_ID;
   }
@@ -92,6 +94,7 @@ test("without both variables the sink stays silent and never reaches the network
 });
 
 test("a repeated alert is throttled so a crash loop cannot flood the chat", async () => {
+  process.env.APP_ENV = "production";
   process.env.TELEGRAM_BOT_TOKEN = "test-token";
   process.env.TELEGRAM_CHAT_ID = "-100123";
   let sent = 0;
@@ -112,6 +115,34 @@ test("a repeated alert is throttled so a crash loop cannot flood the chat", asyn
       true,
     );
     assert.equal(sent, 2);
+  } finally {
+    globalThis.fetch = guard;
+    process.env.APP_ENV = "development";
+    delete process.env.TELEGRAM_BOT_TOKEN;
+    delete process.env.TELEGRAM_CHAT_ID;
+  }
+});
+
+test("outside production the sink is silent, whatever is configured", async () => {
+  // The client reads this chat. DEV deployments and local runs share its
+  // credentials, so the environment, not the token, decides who may post.
+  process.env.APP_ENV = "development";
+  process.env.TELEGRAM_BOT_TOKEN = "test-token";
+  process.env.TELEGRAM_CHAT_ID = "-100123";
+  const guard = globalThis.fetch;
+  globalThis.fetch = (async () => {
+    assert.fail("a development notification reached the network");
+  }) as unknown as typeof fetch;
+  try {
+    assert.equal(
+      await telegram.notify(
+        "crash",
+        "/[locale]/page",
+        {},
+        { throttleKey: "dev" },
+      ),
+      false,
+    );
   } finally {
     globalThis.fetch = guard;
     delete process.env.TELEGRAM_BOT_TOKEN;

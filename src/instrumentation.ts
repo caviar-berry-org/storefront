@@ -1,6 +1,21 @@
 import type { Instrumentation } from "next";
 
 /**
+ * A POST whose body is not what its content type claims. Scanners probing for
+ * PHP upload holes send `multipart/form-data` with no boundary; Next fails to
+ * decode it as a Server Action payload before any of our code runs. Nothing is
+ * broken and nothing is reachable, so it is noise that would bury a real crash.
+ * Our own forms cannot produce it — the browser always writes the boundary.
+ * The platform log still keeps every one of them.
+ */
+function unreadableBody(error: unknown) {
+  if (!(error instanceof Error)) return false;
+  if (/^Failed to parse body as (FormData|URLSearchParams)/.test(error.message))
+    return true;
+  return error.cause instanceof Error && /boundary/i.test(error.cause.message);
+}
+
+/**
  * Unhandled server errors. `logCommerce` covers the failures we predicted and
  * gave names to; this covers the ones we did not, which are exactly the ones
  * worth being told about.
@@ -14,6 +29,7 @@ export const onRequestError: Instrumentation.onRequestError = async (
   request,
   context,
 ) => {
+  if (unreadableBody(error)) return;
   // Imported lazily so the Edge runtime never pulls the server-only sink, and a
   // broken import can never take down error reporting itself.
   try {
