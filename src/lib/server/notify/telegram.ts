@@ -108,6 +108,11 @@ export async function notify(
   fields: NotifyFields = {},
   options: { throttleKey?: string; disclose?: boolean } = {},
 ): Promise<boolean> {
+  // Only production speaks. The client reads this chat, so a test order, a
+  // scanner probe or a local experiment must never appear in it. A separate
+  // DEV chat, if one is ever wanted, is its own chat id plus this gate.
+  if (process.env.APP_ENV !== "production") return false;
+
   const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
   const chat = process.env.TELEGRAM_CHAT_ID?.trim();
   if (!token || !chat) return false;
@@ -128,10 +133,7 @@ export async function notify(
       const text = show(value);
       return `<b>${escapeHtml(name)}:</b>${text.includes("\n") ? "\n" : " "}${text}`;
     });
-  // Production and DEV share one chat on purpose — two chats mean two places to
-  // forget to look. The marker is what keeps a DEV crash from reading as a real one.
-  const environment = process.env.APP_ENV === "production" ? "" : " [DEV]";
-  const text = [`${heading[category]}${environment} · ${show(title)}`, ...lines]
+  const text = [`${heading[category]} · ${show(title)}`, ...lines]
     .join("\n")
     .slice(0, messageLimit);
 
